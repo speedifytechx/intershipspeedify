@@ -51,37 +51,43 @@ const sessionBlobs = {};
 function saveState() { localStorage.setItem('speedify_portal_state', JSON.stringify(appState)); }
 function saveSession() { sessionStorage.setItem('speedify_portal_session', JSON.stringify(currentSession)); }
 
-// --- FIREBASE CONFIG (hardcoded) ---
+// --- FIREBASE CONFIG ---
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAE7UBdFiSM6cDKkb5gsfUp_mQ-akP6qzc",
-  authDomain: "intership-bee53.firebaseapp.com",
-  projectId: "intership-bee53",
-  storageBucket: "intership-bee53.firebasestorage.app",
+  apiKey:            "AIzaSyAE7UBdFiSM6cDKkb5gsfUp_mQ-akP6qzc",
+  authDomain:        "intership-bee53.firebaseapp.com",
+  projectId:         "intership-bee53",
+  storageBucket:     "intership-bee53.firebasestorage.app",
   messagingSenderId: "7938936972",
-  appId: "1:7938936972:web:a35806ac1db8879993eba9",
-  measurementId: "G-ERJL916RKG"
+  appId:             "1:7938936972:web:a35806ac1db8879993eba9",
+  measurementId:     "G-ERJL916RKG"
 };
 
-// --- FIREBASE INITIALIZATION ---
-let firebaseAuth = null;
+// --- FIREBASE GLOBALS ---
+let firebaseApp      = null;
+let firebaseAuth     = null;
+let firebaseDb       = null;
 let isFirebaseActive = false;
 
 async function initFirebase() {
-  try {
-    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
-    const { getAuth } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
-    const app = initializeApp(FIREBASE_CONFIG);
-    firebaseAuth = getAuth(app);
+  // Wait up to 5s for the Firebase module in index.html to finish
+  for (let i = 0; i < 50; i++) {
+    if (window.__firebaseReady) break;
+    await new Promise(r => setTimeout(r, 100));
+  }
+
+  if (window.__firebaseReady && window.__firebaseAuth && window.__firebaseDb) {
+    firebaseApp      = window.__firebaseApp;
+    firebaseAuth     = window.__firebaseAuth;
+    firebaseDb       = window.__firebaseDb;
     isFirebaseActive = true;
-    console.log("✅ Firebase Auth connected: intership-bee53");
-  } catch (e) {
-    console.warn("Firebase init failed, falling back to local auth:", e);
+    console.log("✅ Firebase connected (Auth + Firestore + Analytics)");
+  } else {
+    console.warn("⚠️ Firebase not ready — running in local-only mode");
     isFirebaseActive = false;
-    firebaseAuth = null;
   }
 }
 
-// Initialize Firebase immediately and render login after it's ready
+// Boot: init Firebase first, then start the router
 initFirebase().then(() => {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initRouter);
@@ -125,12 +131,16 @@ function closeModal() {
   const video = modalBody.querySelector('video');
   if (video) video.pause();
 }
+// Expose to window for inline onclick handlers (needed with type="module")
+window.closeModal  = closeModal;
+window.showToast   = showToast;
 if (modalClose) modalClose.addEventListener('click', closeModal);
 if (modalContainer) { modalContainer.addEventListener('click', (e) => { if (e.target === modalContainer) closeModal(); }); }
 
 // --- ROUTER ---
 function initRouter() { window.addEventListener('hashchange', handleRoute); handleRoute(); }
 function navigateTo(hash) { window.location.hash = hash; }
+window.navigateTo = navigateTo;
 
 function handleRoute() {
   const hash = window.location.hash || '#login';
@@ -261,26 +271,46 @@ function renderApplyView(container) {
   </div>`;
   document.getElementById('form-apply').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Submitting...</span>';
+
     const appData = {
       id: generateId('app'),
-      fullName: document.getElementById('apply-name').value.trim(),
-      email: document.getElementById('apply-email').value.trim(),
-      phone: document.getElementById('apply-phone').value.trim(),
-      role: document.getElementById('apply-role').value,
-      university: document.getElementById('apply-uni').value.trim(),
+      fullName:        document.getElementById('apply-name').value.trim(),
+      email:           document.getElementById('apply-email').value.trim(),
+      phone:           document.getElementById('apply-phone').value.trim(),
+      role:            document.getElementById('apply-role').value,
+      university:      document.getElementById('apply-uni').value.trim(),
       preferredCohort: document.getElementById('apply-cohort').value,
-      resumeLink: document.getElementById('apply-resume').value.trim(),
-      portfolioLink: document.getElementById('apply-portfolio').value.trim() || 'N/A',
-      coverLetter: document.getElementById('apply-cover').value.trim(),
-      status: "Review", appliedAt: new Date().toISOString()
+      resumeLink:      document.getElementById('apply-resume').value.trim(),
+      portfolioLink:   document.getElementById('apply-portfolio').value.trim() || 'N/A',
+      coverLetter:     document.getElementById('apply-cover').value.trim(),
+      status:    "Review",
+      appliedAt: new Date().toISOString()
     };
-    appState.applications.push(appData); saveState();
-    const webhookUrl = appState.config.sheetsWebhook;
-    if (webhookUrl) {
-      try { await fetch(webhookUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(appData) }); showToast("Submitted to spreadsheet!", "success"); }
-      catch (err) { showToast("Saved locally. Sheets sync failed.", "warning"); }
-    } else { showToast("Application submitted successfully!", "success"); }
+
+    // Always save locally
+    appState.applications.push(appData);
+    saveState();
+
+    // Save to Firestore using the global firebaseDb
+    if (firebaseDb) {
+      try {
+        const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+        await addDoc(collection(firebaseDb, "applications"), appData);
+        showToast("Application saved to Firebase!", "success");
+      } catch (err) {
+        console.error("Firestore write error:", err);
+        showToast("Saved locally — Firebase sync failed.", "warning");
+      }
+    } else {
+      showToast("Application submitted successfully!", "success");
+    }
+
     document.getElementById('form-apply').reset();
+    btn.disabled = false;
+    btn.innerHTML = '<span>Submit Application</span><i class="fa-solid fa-paper-plane"></i>';
     navigateTo('#login');
   });
 }
@@ -326,19 +356,28 @@ function renderLoginView(container) {
   </div>`;
   document.getElementById('form-login').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const emailVal = document.getElementById('login-username').value.trim();
+    const emailVal    = document.getElementById('login-username').value.trim();
     const passwordVal = document.getElementById('login-password').value;
+
     if (isFirebaseActive && firebaseAuth) {
       const btn = e.target.querySelector('button[type="submit"]');
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Signing in...</span>';
       try {
         const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
-        const userCredential = await signInWithEmailAndPassword(firebaseAuth, emailVal, passwordVal);
-        const fbUser = userCredential.user;
+        const userCredential = await signInWithEmailAndPassword(firebaseAuth, emailVal, passwordVal);        const fbUser = userCredential.user;
+
+        // Match to local user record or create one
         let localUserObj = appState.users.find(u => u.email.toLowerCase() === fbUser.email.toLowerCase());
         if (!localUserObj) {
-          localUserObj = { id: fbUser.uid, username: fbUser.email.split('@')[0], fullName: fbUser.displayName || fbUser.email.split('@')[0], role: "student", email: fbUser.email, joinedDate: new Date().toISOString().split('T')[0] };
+          localUserObj = {
+            id: fbUser.uid,
+            username: fbUser.email.split('@')[0],
+            fullName: fbUser.displayName || fbUser.email.split('@')[0],
+            role: "student",
+            email: fbUser.email,
+            joinedDate: new Date().toISOString().split('T')[0]
+          };
           appState.users.push(localUserObj); saveState();
         }
         currentSession.currentUser = localUserObj; saveSession();
@@ -347,16 +386,22 @@ function renderLoginView(container) {
       } catch (err) {
         btn.disabled = false;
         btn.innerHTML = '<span>Sign In</span><i class="fa-solid fa-right-from-bracket"></i>';
-        const msg = err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password'
-          ? "Invalid email or password." : err.code === 'auth/too-many-requests'
-          ? "Too many failed attempts. Try again later." : `Auth error: ${err.message}`;
+        const msg =
+          err.code === 'auth/invalid-credential'  ||
+          err.code === 'auth/user-not-found'       ||
+          err.code === 'auth/wrong-password'
+            ? "Invalid email or password."
+            : err.code === 'auth/too-many-requests'
+            ? "Too many attempts. Try again later."
+            : `Auth error: ${err.message}`;
         showToast(msg, "error");
       }
     } else {
-      // Fallback: local mock auth (allows username OR email)
+      // Local fallback (username OR email)
       const user = appState.users.find(u =>
-        (u.username.toLowerCase() === emailVal.toLowerCase() || u.email.toLowerCase() === emailVal.toLowerCase())
-        && u.password === passwordVal
+        (u.username.toLowerCase() === emailVal.toLowerCase() ||
+         u.email.toLowerCase()    === emailVal.toLowerCase()) &&
+        u.password === passwordVal
       );
       if (user) {
         currentSession.currentUser = { id: user.id, username: user.username, fullName: user.fullName, role: user.role, email: user.email };
@@ -504,10 +549,13 @@ function renderStudentDashboard(container) {
           <div class="file-preview" id="screenshot-preview-container"><img id="screenshot-preview-img" src="" alt="Preview"></div>
           <div class="file-preview-name" id="screenshot-file-name"></div>
         </div>
-        <div class="file-upload-box" id="video-upload-box">
-          <input type="file" id="report-video" accept="video/*">
-          <div class="file-upload-content" id="video-box-content"><i class="fa-regular fa-square-caret-right"></i><span>Add Progress Video</span><p>MP4, WebM up to 50MB</p></div>
-          <div class="file-preview-name" id="video-file-name"></div>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; border:2px dashed var(--border-color); border-radius:12px; padding:20px; background:rgba(8,12,20,0.3); transition:all 0.3s ease;">
+          <label class="form-label" style="margin-bottom:10px;"><i class="fa-brands fa-github" style="margin-right:6px; color:var(--accent-cyan);"></i>GitHub Repository Link</label>
+          <div class="input-container">
+            <input class="form-control" type="url" id="report-github" placeholder="https://github.com/username/repo" style="padding-left:42px;">
+            <i class="fa-brands fa-github" style="left:14px; top:50%; transform:translateY(-50%); position:absolute; color:var(--text-muted);"></i>
+          </div>
+          <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">Link to your day's commit or branch</p>
         </div>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:16px;">
@@ -669,28 +717,11 @@ function renderStudentDashboard(container) {
     }
   });
 
-  // Video upload
-  const videoInput = document.getElementById('report-video');
-  const videoFileName = document.getElementById('video-file-name');
-  const videoBoxContent = document.getElementById('video-box-content');
-  videoInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const videoUrl = URL.createObjectURL(file); sessionBlobs[file.name] = videoUrl;
-      videoBoxContent.querySelector('i').className = 'fa-solid fa-circle-check';
-      videoBoxContent.querySelector('i').style.color = 'var(--accent-cyan)';
-      videoBoxContent.querySelector('span').innerText = 'Video Selected';
-      videoFileName.innerText = file.name; videoFileName.style.display = 'block';
-    }
-  });
-
   document.getElementById('btn-reset-report').addEventListener('click', () => {
     ssBoxContent.style.display = 'block'; ssPreviewContainer.style.display = 'none'; ssPreviewImg.src = '';
     ssFileName.innerText = ''; ssFileName.style.display = 'none';
-    videoBoxContent.querySelector('i').className = 'fa-regular fa-square-caret-right';
-    videoBoxContent.querySelector('i').style.color = 'var(--text-muted)';
-    videoBoxContent.querySelector('span').innerText = 'Add Progress Video';
-    videoFileName.innerText = ''; videoFileName.style.display = 'none';
+    const ghInput = document.getElementById('report-github');
+    if (ghInput) ghInput.value = '';
   });
 
   document.getElementById('form-report').addEventListener('submit', (e) => {
@@ -698,9 +729,17 @@ function renderStudentDashboard(container) {
     const dateVal = document.getElementById('report-date').value;
     const hoursVal = parseFloat(document.getElementById('report-hours').value);
     const summaryVal = document.getElementById('report-summary').value.trim();
+    const githubLink = document.getElementById('report-github').value.trim();
     if (appState.reports.some(r => r.userId === student.id && r.date === dateVal)) { showToast(`Report for ${dateVal} already submitted.`, "error"); return; }
-    const ssFile = ssInput.files[0]; const vidFile = videoInput.files[0];
-    const newReport = { id: generateId('rep'), userId: student.id, studentName: student.fullName, date: dateVal, summary: summaryVal, hoursWorked: hoursVal, videoName: vidFile ? vidFile.name : "", videoUrl: vidFile ? sessionBlobs[vidFile.name] : "", screenshotName: ssFile ? ssFile.name : "", screenshotUrl: ssFile ? ssPreviewImg.src : "", status: "pending", feedback: "", createdAt: new Date().toISOString() };
+    const ssFile = ssInput.files[0];
+    const newReport = {
+      id: generateId('rep'), userId: student.id, studentName: student.fullName,
+      date: dateVal, summary: summaryVal, hoursWorked: hoursVal,
+      githubLink: githubLink || "",
+      videoName: "", videoUrl: "",
+      screenshotName: ssFile ? ssFile.name : "", screenshotUrl: ssFile ? ssPreviewImg.src : "",
+      status: "pending", feedback: "", createdAt: new Date().toISOString()
+    };
     appState.reports.push(newReport); saveState();
     showToast("Report submitted successfully!", "success");
     addStudentActivity(`Submitted daily report for ${dateVal}.`);
@@ -1031,13 +1070,79 @@ function renderMentorDashboard(container) {
         <p><strong style="color:var(--text-secondary);">Enrolled Date:</strong> <span id="mp-sidebar-joined">...</span></p>
       </div>
     </div>
-    <div class="glass-card profile-detail-card">
-      <h3 style="font-size:16px;font-weight:600;margin-bottom:20px;border-bottom:1px solid var(--border-color);padding-bottom:10px;">Staff Credentials</h3>
-      <div class="profile-info-grid">
-        <div class="profile-info-item"><h4>Email Address</h4><p id="mp-detail-email">...</p></div>
-        <div class="profile-info-item"><h4>Designation</h4><p id="mp-detail-desig">...</p></div>
-        <div class="profile-info-item"><h4>Username</h4><p id="mp-detail-username">...</p></div>
-        <div class="profile-info-item"><h4>Admin Status</h4><p><span class="badge badge-approved">Active Administrator</span></p></div>
+    <div style="display:flex; flex-direction:column; gap:24px;">
+      <div class="glass-card profile-detail-card">
+        <h3 style="font-size:16px;font-weight:600;margin-bottom:20px;border-bottom:1px solid var(--border-color);padding-bottom:10px;">Staff Credentials</h3>
+        <div class="profile-info-grid">
+          <div class="profile-info-item"><h4>Email Address</h4><p id="mp-detail-email">...</p></div>
+          <div class="profile-info-item"><h4>Designation</h4><p id="mp-detail-desig">...</p></div>
+          <div class="profile-info-item"><h4>Username</h4><p id="mp-detail-username">...</p></div>
+          <div class="profile-info-item"><h4>Admin Status</h4><p><span class="badge badge-approved">Active Administrator</span></p></div>
+        </div>
+      </div>
+
+      <!-- Google Sheets Integration -->
+      <div class="glass-card" style="border:1px solid rgba(16,185,129,0.2);">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-color);">
+          <div style="width:38px;height:38px;border-radius:10px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);display:flex;align-items:center;justify-content:center;">
+            <i class="fa-solid fa-table-cells-large" style="color:var(--success);font-size:16px;"></i>
+          </div>
+          <div>
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:2px;">Google Sheets Integration</h3>
+            <p style="font-size:11px;color:var(--text-muted);">Auto-sync internship applications to your spreadsheet</p>
+          </div>
+          <span id="sheets-status-badge" class="badge ${appState.config.sheetsWebhook ? 'badge-approved' : 'badge-pending'}" style="margin-left:auto;">
+            ${appState.config.sheetsWebhook ? '<i class="fa-solid fa-circle-check"></i> Connected' : '<i class="fa-solid fa-circle-xmark"></i> Not Connected'}
+          </span>
+        </div>
+
+        <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;padding:14px;background:rgba(16,185,129,0.03);border:1px solid rgba(16,185,129,0.1);border-radius:10px;">
+          <strong style="color:var(--text-primary);font-size:13px;">How to connect Google Sheets:</strong><br><br>
+          <strong style="color:var(--accent-cyan);">Step 1.</strong> Open <a href="https://sheets.google.com" target="_blank" style="color:var(--accent-cyan);">Google Sheets</a> → create a new spreadsheet<br>
+          <strong style="color:var(--accent-cyan);">Step 2.</strong> Click <strong>Extensions → Apps Script</strong><br>
+          <strong style="color:var(--accent-cyan);">Step 3.</strong> Paste this script and click <strong>Deploy → New Deployment → Web App</strong> (Anyone can access):<br><br>
+          <pre id="apps-script-snippet" style="background:rgba(0,0,0,0.4);padding:12px;border-radius:8px;font-size:11px;color:#a5f3fc;overflow-x:auto;white-space:pre-wrap;line-height:1.6;">function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["Date","Full Name","Email","Phone","Role","University","Cohort","Resume","Portfolio","Cover Letter","Status"]);
+  }
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    new Date(data.appliedAt).toLocaleDateString(),
+    data.fullName, data.email, data.phone, data.role,
+    data.university, data.preferredCohort, data.resumeLink,
+    data.portfolioLink, data.coverLetter, data.status
+  ]);
+  return ContentService.createTextOutput("OK");
+}</pre>
+          <button class="btn btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('apps-script-snippet').innerText); showToast('Script copied!','success');" style="padding:6px 14px;font-size:11px;margin-top:8px;">
+            <i class="fa-solid fa-copy"></i> Copy Script
+          </button><br><br>
+          <strong style="color:var(--accent-cyan);">Step 4.</strong> Copy the <strong>Web App URL</strong> from the deployment and paste it below.
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;">
+            <span>Google Apps Script Web App URL</span>
+            <span id="webhook-validate-msg" style="font-size:10px;"></span>
+          </label>
+          <div class="input-container">
+            <input class="form-control" type="url" id="cfg-sheets-webhook-input"
+              placeholder="https://script.google.com/macros/s/AKfycbx.../exec"
+              value="${appState.config.sheetsWebhook || ''}"
+              style="padding-left:42px;">
+            <i class="fa-solid fa-link" style="left:14px;top:50%;transform:translateY(-50%);position:absolute;color:var(--text-muted);"></i>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <button class="btn btn-primary" id="btn-save-webhook" style="background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 15px rgba(16,185,129,0.2);">
+            <i class="fa-solid fa-plug"></i><span>Save & Connect</span>
+          </button>
+          <button class="btn btn-secondary" id="btn-test-webhook" style="color:var(--accent-cyan);border-color:rgba(0,242,254,0.2);">
+            <i class="fa-solid fa-paper-plane"></i><span>Send Test Row</span>
+          </button>
+          ${appState.config.sheetsWebhook ? `<button class="btn btn-secondary" id="btn-disconnect-webhook" style="color:var(--danger);border-color:rgba(244,63,94,0.2);margin-left:auto;"><i class="fa-solid fa-plug-circle-xmark"></i><span>Disconnect</span></button>` : ''}
+        </div>
       </div>
     </div>
   </div>
