@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speedify Tech X Internship Portal</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Firebase SDK (v10) CDN Loader -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    window.firebaseImports = { initializeApp, getAuth };
+  </script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Elements for Premium Glassmorphism Look -->
+  <div class="glow-bg">
+    <div class="glow-circle glow-1"></div>
+    <div class="glow-circle glow-2"></div>
+    <div class="glow-circle glow-3"></div>
+  </div>
+
+  <!-- App Container -->
+  <div id="app" class="app-layout">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Sidebar / Navigation -->
+    <aside id="sidebar" class="sidebar hidden">
+      <div class="sidebar-header">
+        <div class="logo">
+          <img src="logo.jpg" alt="Speedify Logo" class="logo-img">
+          <span class="logo-text">Speedify <span class="accent-text">Tech X</span></span>
+        </div>
+      </div>
+      <div class="user-profile-summary">
+        <div class="avatar" id="nav-avatar">S</div>
+        <div class="user-info">
+          <h4 id="nav-user-name">Loading...</h4>
+          <p id="nav-user-role">Intern</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <ul id="sidebar-menu">
+          <!-- Menu items injected dynamically by app.js -->
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="btn-logout" class="btn-logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="main-content full-width">
+      <!-- Dynamic view injection point -->
+      <div id="view-container" class="fade-in"></div>
+    </main>
+
+  </div>
+
+  <!-- Custom Modal Container -->
+  <div id="modal-container" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal Title</h3>
+        <button id="modal-close" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Dynamic modal content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom JavaScript -->
+  <script src="app.js"></script>
+</body>
+</html>
