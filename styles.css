@@ -503,3 +503,290 @@ select.form-control { padding-left: 16px; }
   .home-stats { grid-template-columns: 1fr 1fr; }
   .home-contact { grid-template-columns: 1fr; }
 }
+
+
+/* ============================================================
+   MOBILE RESPONSIVE — PORTAL (styles.css)
+   ============================================================ */
+
+/* ── Base mobile padding ── */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px;
+  }
+  .main-content.full-width {
+    padding-left: 16px;
+  }
+  .main-content.shifted {
+    margin-left: 0;
+  }
+}
+
+/* ── Sidebar: slide-over on mobile ── */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    max-width: 280px;
+    z-index: 200;
+  }
+  /* Overlay backdrop when sidebar is open */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 199;
+    backdrop-filter: blur(2px);
+  }
+  .sidebar-backdrop.active {
+    display: block;
+  }
+}
+
+/* ── Mobile top bar (hamburger) ── */
+@media (max-width: 768px) {
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(16px);
+    position: sticky;
+    top: 0;
+    z-index: 150;
+  }
+  .mobile-topbar .logo {
+    gap: 10px;
+  }
+  .btn-hamburger {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .btn-hamburger:hover {
+    background: var(--bg-card);
+  }
+}
+
+/* Hide mobile topbar on desktop */
+.mobile-topbar {
+  display: none;
+}
+
+/* ── View header: stack on small screens ── */
+@media (max-width: 600px) {
+  .view-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .view-title h1 {
+    font-size: 20px;
+  }
+}
+
+/* ── Table filters: stack on mobile ── */
+@media (max-width: 600px) {
+  .table-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-input-wrapper {
+    max-width: 100%;
+  }
+}
+
+/* ── Button group: full-width stack ── */
+@media (max-width: 480px) {
+  .btn-group {
+    flex-direction: column;
+  }
+  .btn-group .btn {
+    width: 100%;
+  }
+}
+
+/* ── File upload: stack vertically ── */
+@media (max-width: 600px) {
+  .file-upload-wrapper {
+    flex-direction: column;
+  }
+}
+
+/* ── Task item: stack content ── */
+@media (max-width: 480px) {
+  .task-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+  .task-meta {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* ── Report review header: stack ── */
+@media (max-width: 600px) {
+  .report-review-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .review-btns {
+    justify-content: stretch;
+    flex-direction: column;
+  }
+  .review-btns .btn {
+    width: 100%;
+  }
+}
+
+/* ── Spreadsheet: horizontal scroll on mobile ── */
+@media (max-width: 600px) {
+  .spreadsheet-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .spreadsheet-header-row,
+  .spreadsheet-row {
+    min-width: 480px;
+  }
+}
+
+/* ── Earnings grid: 1 col on small mobile ── */
+@media (max-width: 480px) {
+  .earnings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Modal: full-screen on mobile ── */
+@media (max-width: 480px) {
+  .modal-card {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 18px 18px 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    transform: translateY(100%);
+  }
+  .modal-overlay.active .modal-card {
+    transform: translateY(0);
+  }
+  .modal-body {
+    max-height: 60vh;
+  }
+}
+
+/* ── Toast: full-width on mobile ── */
+@media (max-width: 480px) {
+  .toast-container {
+    top: auto;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+  }
+  .toast {
+    min-width: unset;
+    width: 100%;
+  }
+}
+
+/* ── Auth card: padding fix on tiny screens ── */
+@media (max-width: 480px) {
+  .auth-wrapper {
+    padding: 16px;
+    min-height: 100dvh;
+    align-items: flex-start;
+    padding-top: 32px;
+  }
+  .glass-card {
+    padding: 16px;
+  }
+}
+
+/* ── Home hero inside portal (styles.css home-*) ── */
+@media (max-width: 768px) {
+  .home-nav {
+    padding: 12px 16px;
+  }
+  .home-hero {
+    flex-direction: column;
+    padding: 32px 16px;
+    text-align: center;
+    gap: 32px;
+  }
+  .home-hero-left {
+    max-width: 100%;
+  }
+  .home-cta-row,
+  .home-trust {
+    justify-content: center;
+  }
+  .home-hero-right {
+    min-height: 240px;
+    min-width: unset;
+    width: 100%;
+  }
+  .home-float {
+    display: none;
+  }
+  .home-msme {
+    margin: 0 16px 10px;
+    flex-direction: column;
+    text-align: center;
+  }
+  .home-stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 24px 16px;
+  }
+  .home-section {
+    padding: 40px 16px;
+  }
+  .home-why {
+    grid-template-columns: 1fr;
+  }
+  .home-contact {
+    grid-template-columns: 1fr;
+  }
+  .home-footer {
+    padding: 20px 16px;
+    flex-direction: column;
+    text-align: center;
+  }
+  .hf-footer {
+    padding: 0 16px;
+  }
+}
+
+/* ── PROFILE / HOME TAB GRID RESPONSIVE ─────────────────── */
+@media (max-width: 900px) {
+  /* Stack profile card + details vertically on tablet/mobile */
+  div[style*="grid-template-columns: 340px 1fr"],
+  div[style*="grid-template-columns: 320px 1fr"],
+  div[style*="grid-template-columns:340px 1fr"],
+  div[style*="grid-template-columns:320px 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* Shrink home stats row */
+  div[style*="grid-template-columns: repeat(3,1fr)"],
+  div[style*="grid-template-columns:repeat(3,1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+@media (max-width: 540px) {
+  div[style*="grid-template-columns: repeat(3,1fr)"],
+  div[style*="grid-template-columns:repeat(3,1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+}
