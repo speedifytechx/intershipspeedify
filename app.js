@@ -3,44 +3,21 @@
 // --- STATE MANAGEMENT ---
 const DEFAULT_STATE = {
   users: [
-    { id: "usr_1", username: "speedifytechx", password: "MNNPS2772007", fullName: "Dr. Sarah Jenkins", role: "mentor", email: "speedifytechx@gmail.com", department: "Engineering", designation: "Lead Mentor", joinedDate: "2025-01-10" },
-    { id: "usr_2", username: "student1", password: "password123", fullName: "Alex Mercer", role: "student", email: "alex.m@gmail.com", cohort: "Web Dev Cohort A", joinedDate: "2026-06-01", phone: "+1 (555) 019-2834", university: "Stanford University", hourlyRate: 20 },
-    { id: "usr_3", username: "student2", password: "password123", fullName: "Elena Rostova", role: "student", email: "elena.r@outlook.com", cohort: "Mobile Dev Cohort B", joinedDate: "2026-06-01", phone: "+1 (555) 018-9201", university: "MIT", hourlyRate: 18 }
+    { id: "usr_1", username: "speedifytechx", password: "MNNPS2772007", fullName: "Dr. Sarah Jenkins", role: "mentor", email: "speedifytechx@gmail.com", department: "Engineering", designation: "Lead Mentor", joinedDate: "2025-01-10" }
   ],
-  attendance: [
-    { id: "att_1", userId: "usr_2", date: "2026-06-17", clockIn: "09:05 AM", clockOut: "05:15 PM", status: "present" },
-    { id: "att_2", userId: "usr_2", date: "2026-06-18", clockIn: "08:58 AM", clockOut: "05:00 PM", status: "present" },
-    { id: "att_3", userId: "usr_3", date: "2026-06-17", clockIn: "09:45 AM", clockOut: "05:30 PM", status: "late" },
-    { id: "att_4", userId: "usr_3", date: "2026-06-18", clockIn: "", clockOut: "", status: "absent" }
-  ],
-  reports: [
-    { id: "rep_1", userId: "usr_2", studentName: "Alex Mercer", date: "2026-06-17", summary: "Implemented the client-side state machine and route dispatcher. Designed glassmorphic cards using advanced CSS variables and backdrop filters. Completed responsive grid integration for student progress views.", hoursWorked: 8, videoName: "progress_demo_v1.mp4", videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", screenshotName: "dashboard_layout.png", screenshotUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%231e293b'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%2300f2fe'>Screenshot: Dashboard Layout Mockup</text></svg>", status: "approved", feedback: "Excellent layout design and clean code structure.", createdAt: "2026-06-17T17:30:00Z" },
-    { id: "rep_2", userId: "usr_2", studentName: "Alex Mercer", date: "2026-06-18", summary: "Worked on routing logic and local persistence using localStorage. Bound click event triggers to dynamic templates. Resolved index navigation offsets.", hoursWorked: 7.5, videoName: "route_test.mp4", videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", screenshotName: "route_diagram.png", screenshotUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%231e293b'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%2300f2fe'>Screenshot: SPA Route Mapping Diagram</text></svg>", status: "pending", feedback: "", createdAt: "2026-06-18T17:15:00Z" },
-    { id: "rep_3", userId: "usr_3", studentName: "Elena Rostova", date: "2026-06-17", summary: "Configured build scripts and dependencies. Initiated landing page template using Flexbox. Set up base asset catalog.", hoursWorked: 6, videoName: "", videoUrl: "", screenshotName: "project_init.png", screenshotUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%231e293b'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%2300f2fe'>Screenshot: Project Initialization Folder Structure</text></svg>", status: "approved", feedback: "Setup is fine. Please attach progress videos starting tomorrow.", createdAt: "2026-06-17T18:00:00Z" }
-  ],
-  tasks: [
-    { id: "tsk_1", assignedTo: "usr_2", assignedBy: "Dr. Sarah Jenkins", title: "Implement SPA Router", description: "Design a state-based client-side router in Vanilla JS supporting hash triggers.", dueDate: "2026-06-20", status: "completed", completedAt: "2026-06-18" },
-    { id: "tsk_2", assignedTo: "usr_2", assignedBy: "Dr. Sarah Jenkins", title: "Create Glassmorphic Dashboard UI", description: "Assemble CSS tokens, blur filters, grid layouts, and hover behaviors.", dueDate: "2026-06-22", status: "pending", completedAt: "" },
-    { id: "tsk_3", assignedTo: "usr_3", assignedBy: "Dr. Sarah Jenkins", title: "Integrate LocalStorage DB", description: "Establish state initialization, query methods, and writes mapper mapping to localStorage.", dueDate: "2026-06-21", status: "pending", completedAt: "" }
-  ],
-  projects: [
-    { id: "proj_1", userId: "usr_2", studentName: "Alex Mercer", title: "Internship Web Portal SPA", description: "Completed Phase 1 of the portal. Implemented index structure, styling sheets, routing configs, and state bindings.", repoUrl: "https://github.com/alexmercer/speedify-portal", liveUrl: "https://speedify-portal-demo.web.app", zipName: "speedify_portal_src.zip", status: "approved", feedback: "Excellent architectural layout. Frontend details are very polished.", submittedAt: "2026-06-18T16:00:00Z" }
-  ],
-  resources: [
-    { id: "res_1", title: "Orientation Lecture & Workspace Setup", type: "video", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", fileName: "orientation_session_rec.mp4", description: "Check out this recorded video reviewing corporate guidelines, project timelines, and local environment staging requirements.", linkUrl: "https://slides.google.com/speedify-orientation", postedBy: "Dr. Sarah Jenkins", postedAt: "2026-06-01T10:00:00Z" },
-    { id: "res_2", title: "API Documentation Guidelines", type: "doc", url: "", fileName: "", description: "Read through this document summarizing standardized REST routing, JWT schemas, and SQLite models constraints.", linkUrl: "https://docs.speedify.com/api-handbook", postedBy: "Dr. Sarah Jenkins", postedAt: "2026-06-05T14:30:00Z" }
-  ],
-  payments: [
-    { id: "pay_1", userId: "usr_2", amount: 160, description: "Stipend Payout: June Week 1 & 2 (8 Approved Hours @ $20/hr)", date: "2026-06-18", refNo: "TX-PAY-882031" }
-  ],
-  applications: [
-    { id: "app_1", fullName: "James Cole", email: "james.cole@gmail.com", phone: "+1 (555) 012-3456", role: "Software Engineer Intern", university: "Harvard University", preferredCohort: "Web Dev Cohort A", resumeLink: "https://drive.google.com/resume_james", portfolioLink: "https://jamescole.dev", coverLetter: "I am passionate about high-performance web systems and would love to contribute to Speedify.", status: "Review", appliedAt: "2026-06-19T10:15:00Z" }
-  ],
-  config: { firebase: null, sheetsWebhook: "" }
+  attendance: [],
+  reports: [],
+  tasks: [],
+  projects: [],
+  resources: [],
+  payments: [],
+  applications: [],
+  config: { firebase: null, sheetsWebhook: "https://script.google.com/macros/s/AKfycbz6Uvo2mIaYAN8EYGA44pFTQr-dspXs7HIMvJFQMGMUnrkB7p__pjfvhvGYILqlQf_u/exec" }
 };
 
 // State and Session Init
-const STATE_VERSION = "4";
+const STATE_VERSION = "5";
+const SHEETS_WEBHOOK = "https://script.google.com/macros/s/AKfycbz6Uvo2mIaYAN8EYGA44pFTQr-dspXs7HIMvJFQMGMUnrkB7p__pjfvhvGYILqlQf_u/exec";
 let appState = JSON.parse(localStorage.getItem('speedify_portal_state'));
 if (!appState) {
   // First ever load — seed defaults
@@ -48,17 +25,27 @@ if (!appState) {
   localStorage.setItem('speedify_portal_state', JSON.stringify(appState));
   localStorage.setItem('speedify_portal_version', STATE_VERSION);
 } else if (localStorage.getItem('speedify_portal_version') !== STATE_VERSION) {
-  // Version changed — only update the mentor credentials, keep all user data intact
-  const mentorIdx = appState.users.findIndex(u => u.role === 'mentor');
-  if (mentorIdx !== -1) {
-    appState.users[mentorIdx].username = DEFAULT_STATE.users[0].username;
-    appState.users[mentorIdx].password = DEFAULT_STATE.users[0].password;
-    appState.users[mentorIdx].email    = DEFAULT_STATE.users[0].email;
-  } else {
-    appState.users.unshift(JSON.parse(JSON.stringify(DEFAULT_STATE.users[0])));
+  // Version changed — preserve real registered users, wipe all example/demo data
+  const realUsers = appState.users.filter(u => u.role !== 'mentor');
+  const mentorRecord = appState.users.find(u => u.role === 'mentor');
+  const freshMentor = JSON.parse(JSON.stringify(DEFAULT_STATE.users[0]));
+  if (mentorRecord) {
+    // Keep existing mentor but update credentials to latest
+    freshMentor.id = mentorRecord.id;
   }
+  appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  appState.users = [freshMentor, ...realUsers.filter(u =>
+    // Only keep users that were registered via Firebase (have a non-usr_ id) or were real registrations
+    !['usr_2','usr_3'].includes(u.id)
+  )];
   localStorage.setItem('speedify_portal_state', JSON.stringify(appState));
   localStorage.setItem('speedify_portal_version', STATE_VERSION);
+}
+// Always ensure the webhook URL is set (even for returning users with old state)
+if (!appState.config) appState.config = {};
+if (!appState.config.sheetsWebhook) {
+  appState.config.sheetsWebhook = SHEETS_WEBHOOK;
+  localStorage.setItem('speedify_portal_state', JSON.stringify(appState));
 }
 let currentSession = JSON.parse(sessionStorage.getItem('speedify_portal_session')) || { currentUser: null };
 const sessionBlobs = {};
@@ -190,21 +177,20 @@ function handleRoute() {
 
   // Auth gating
   if (!currentSession.currentUser && hash !== '#login' && hash !== '#register') { navigateTo('#home'); return; }
-  if (currentSession.currentUser && (hash === '#login' || hash === '#register')) { navigateTo('#dashboard'); return; }
+  if (currentSession.currentUser && (hash === '#login' || hash === '#register')) { navigateTo('#portal'); return; }
 
-  if (currentSession.currentUser) {
-    sidebar.classList.remove('hidden'); mainContent.classList.remove('full-width'); mainContent.classList.add('shifted');
-    updateSidebarUI();
-  } else {
-    sidebar.classList.add('hidden'); mainContent.classList.add('full-width'); mainContent.classList.remove('shifted');
-  }
+  // Always hide sidebar — no dashboard tabs anymore
+  sidebar.classList.add('hidden');
+  mainContent.classList.add('full-width');
+  mainContent.classList.remove('shifted');
 
   if (hash === '#login') renderLoginView(viewContainer);
   else if (hash === '#register') renderRegisterView(viewContainer);
-  else if (hash === '#dashboard') {
-    if (currentSession.currentUser.role === 'mentor') renderMentorDashboard(viewContainer);
-    else renderStudentDashboard(viewContainer);
-  } else { viewContainer.innerHTML = `<div class="glass-card"><h2>404 - View Not Found</h2></div>`; }
+  else if (hash === '#portal') {
+    if (!currentSession.currentUser) { navigateTo('#login'); return; }
+    if (currentSession.currentUser.role === 'mentor') renderMentorPortal(viewContainer);
+    else renderStudentPortal(viewContainer);
+  } else { viewContainer.innerHTML = `<div class="glass-card" style="max-width:500px;margin:60px auto;"><h2>404 - Page Not Found</h2></div>`; }
 }
 
 function updateSidebarUI() {
@@ -219,7 +205,8 @@ function updateSidebarUI() {
   navUserRole.innerText = user.role === 'mentor' ? 'Staff / Mentor' : 'Tech X Intern';
   if (user.role === 'mentor') {
     sidebarMenu.innerHTML = `
-      <li><a class="nav-item active" data-tab="mentor-analytics"><i class="fa-solid fa-chart-line"></i><span>Analytics Dashboard</span></a></li>
+      <li><a class="nav-item active" data-tab="mentor-home"><i class="fa-solid fa-house"></i><span>My Profile</span></a></li>
+      <li><a class="nav-item" data-tab="mentor-analytics"><i class="fa-solid fa-chart-line"></i><span>Analytics Dashboard</span></a></li>
       <li><a class="nav-item" data-tab="mentor-tracker"><i class="fa-solid fa-clock-rotate-left"></i><span>Intern Work Tracker</span></a></li>
       <li><a class="nav-item" data-tab="mentor-review"><i class="fa-solid fa-clipboard-check"></i><span>Review Reports</span></a></li>
       <li><a class="nav-item" data-tab="mentor-resources"><i class="fa-solid fa-photo-film"></i><span>Resource Board</span></a></li>
@@ -227,17 +214,16 @@ function updateSidebarUI() {
       <li><a class="nav-item" data-tab="mentor-payments"><i class="fa-solid fa-wallet"></i><span>Stipend Payments</span></a></li>
       <li><a class="nav-item" data-tab="mentor-students"><i class="fa-solid fa-graduation-cap"></i><span>Intern Directory</span></a></li>
       <li><a class="nav-item" data-tab="mentor-applications"><i class="fa-solid fa-table-cells"></i><span>Applications Sheet</span></a></li>
-      <li><a class="nav-item" data-tab="mentor-exports"><i class="fa-solid fa-download"></i><span>Export Data</span></a></li>
-      <li><a class="nav-item" data-tab="mentor-profile"><i class="fa-solid fa-id-card"></i><span>My Profile</span></a></li>`;
+      <li><a class="nav-item" data-tab="mentor-exports"><i class="fa-solid fa-download"></i><span>Export Data</span></a></li>`;
   } else {
     sidebarMenu.innerHTML = `
-      <li><a class="nav-item active" data-tab="student-overview"><i class="fa-solid fa-house"></i><span>Overview</span></a></li>
+      <li><a class="nav-item active" data-tab="student-home"><i class="fa-solid fa-house"></i><span>My Profile</span></a></li>
+      <li><a class="nav-item" data-tab="student-overview"><i class="fa-solid fa-gauge"></i><span>Overview</span></a></li>
       <li><a class="nav-item" data-tab="student-report"><i class="fa-solid fa-file-pen"></i><span>Submit Report</span></a></li>
       <li><a class="nav-item" data-tab="student-project"><i class="fa-solid fa-code-branch"></i><span>Submit Project</span></a></li>
       <li><a class="nav-item" data-tab="student-tasks"><i class="fa-solid fa-tasks"></i><span>My Tasks</span></a></li>
       <li><a class="nav-item" data-tab="student-videos"><i class="fa-solid fa-play-circle"></i><span>Training Videos</span></a></li>
-      <li><a class="nav-item" data-tab="student-history"><i class="fa-solid fa-history"></i><span>Work History</span></a></li>
-      <li><a class="nav-item" data-tab="student-profile"><i class="fa-solid fa-circle-user"></i><span>My Profile</span></a></li>`;
+      <li><a class="nav-item" data-tab="student-history"><i class="fa-solid fa-history"></i><span>Work History</span></a></li>`;
   }
   const navItems = sidebarMenu.querySelectorAll('.nav-item');
   navItems.forEach(item => {
@@ -495,34 +481,161 @@ function renderHomeView(container) {
 // 1. PUBLIC APPLY VIEW
 function renderApplyView(container) {
   container.innerHTML = `
-  <div style="max-width:720px;margin:40px auto;padding:0 16px;">
-    <div style="text-align:center;margin-bottom:32px;">
+  <div style="max-width:780px;margin:40px auto;padding:0 16px 60px;">
+
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:36px;">
       <img src="logo.jpeg" alt="Speedify Logo" class="login-logo-img">
       <h1 style="font-size:26px;font-weight:700;margin-bottom:6px;">Internship Application Form</h1>
-      <p style="color:var(--text-secondary);font-size:14px;">Apply to the Speedify Tech X Internship Program.</p>
-      <a href="#login" style="display:inline-block;margin-top:12px;font-size:13px;color:var(--accent-cyan);text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Portal Login</a>
+      <p style="color:var(--text-secondary);font-size:14px;">Fill in all details — your responses will be recorded in our database.</p>
+      <a href="#home" onclick="navigateTo('#home')" style="display:inline-block;margin-top:12px;font-size:13px;color:var(--accent-cyan);text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
     </div>
-    <div class="glass-card fade-in">
+
+    <div class="glass-card fade-in" style="padding:32px;">
+
+      <!-- Section: Personal Info -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border-color);">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,242,254,0.1);display:flex;align-items:center;justify-content:center;">
+          <i class="fa-solid fa-user" style="color:var(--accent-cyan);font-size:14px;"></i>
+        </div>
+        <h3 style="font-size:15px;font-weight:700;">Personal Information</h3>
+      </div>
       <form id="form-apply">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
-          <div><label class="form-label">Full Name</label><input class="form-control" type="text" id="apply-name" placeholder="John Doe" required style="padding-left:16px;"></div>
-          <div><label class="form-label">Email Address</label><input class="form-control" type="email" id="apply-email" placeholder="john.doe@gmail.com" required style="padding-left:16px;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+          <div>
+            <label class="form-label">Full Name <span style="color:var(--danger);">*</span></label>
+            <input class="form-control" type="text" id="apply-name" placeholder="e.g. Ravi Kumar" required style="padding-left:16px;">
+          </div>
+          <div>
+            <label class="form-label">Email Address <span style="color:var(--danger);">*</span></label>
+            <input class="form-control" type="email" id="apply-email" placeholder="ravi@gmail.com" required style="padding-left:16px;">
+          </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
-          <div><label class="form-label">Phone Number</label><input class="form-control" type="tel" id="apply-phone" placeholder="+1 (555) 000-0000" required style="padding-left:16px;"></div>
-          <div><label class="form-label">University / College</label><input class="form-control" type="text" id="apply-uni" placeholder="Stanford University" required style="padding-left:16px;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+          <div>
+            <label class="form-label">Phone Number <span style="color:var(--danger);">*</span></label>
+            <input class="form-control" type="tel" id="apply-phone" placeholder="+91 98765 43210" required style="padding-left:16px;">
+          </div>
+          <div>
+            <label class="form-label">City / Location <span style="color:var(--danger);">*</span></label>
+            <input class="form-control" type="text" id="apply-city" placeholder="e.g. Chennai, Tamil Nadu" required style="padding-left:16px;">
+          </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr;gap:20px;margin-bottom:20px;">
-          <div><label class="form-label">Preferred Internship Role</label>
+
+        <!-- Section: Academic Info -->
+        <div style="display:flex;align-items:center;gap:10px;margin:24px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--border-color);">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(155,81,224,0.1);display:flex;align-items:center;justify-content:center;">
+            <i class="fa-solid fa-graduation-cap" style="color:var(--accent-purple);font-size:14px;"></i>
+          </div>
+          <h3 style="font-size:15px;font-weight:700;">Academic Details</h3>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+          <div>
+            <label class="form-label">University / College <span style="color:var(--danger);">*</span></label>
+            <input class="form-control" type="text" id="apply-uni" placeholder="e.g. Anna University" required style="padding-left:16px;">
+          </div>
+          <div>
+            <label class="form-label">Degree & Branch <span style="color:var(--danger);">*</span></label>
+            <input class="form-control" type="text" id="apply-degree" placeholder="e.g. B.Tech Computer Science" required style="padding-left:16px;">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+          <div>
+            <label class="form-label">Year of Study <span style="color:var(--danger);">*</span></label>
+            <select class="form-control" id="apply-year" required style="padding-left:16px;background-image:none;">
+              <option value="">-- Select Year --</option>
+              <option>1st Year</option>
+              <option>2nd Year</option>
+              <option>3rd Year</option>
+              <option>4th Year</option>
+              <option>Final Year / Graduated</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Graduation Year <span style="color:var(--danger);">*</span></label>
+            <input class="form-control" type="text" id="apply-grad-year" placeholder="e.g. 2026" required style="padding-left:16px;">
+          </div>
+        </div>
+
+        <!-- Section: Internship Details -->
+        <div style="display:flex;align-items:center;gap:10px;margin:24px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--border-color);">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;">
+            <i class="fa-solid fa-briefcase" style="color:var(--success);font-size:14px;"></i>
+          </div>
+          <h3 style="font-size:15px;font-weight:700;">Internship Preferences</h3>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+          <div>
+            <label class="form-label">Preferred Domain <span style="color:var(--danger);">*</span></label>
             <select class="form-control" id="apply-role" required style="padding-left:16px;background-image:none;">
-              <option>Software Engineer Intern</option><option>Web Development Intern</option><option>Mobile App Developer Intern</option>
-              <option>UI/UX Designer Intern</option><option>Data Analyst Intern</option>
-            </select></div>
+              <option value="">-- Select Domain --</option>
+              <option>Web Development</option>
+              <option>Full Stack Development</option>
+              <option>Mobile App Development</option>
+              <option>UI/UX Design</option>
+              <option>AI & Machine Learning</option>
+              <option>Cyber Security</option>
+              <option>Game Development</option>
+              <option>Data Analytics</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Internship Mode <span style="color:var(--danger);">*</span></label>
+            <select class="form-control" id="apply-mode" required style="padding-left:16px;background-image:none;">
+              <option value="">-- Select Mode --</option>
+              <option>Remote</option>
+              <option>On-site (Chennai)</option>
+              <option>Hybrid</option>
+            </select>
+          </div>
         </div>
-        <button class="btn btn-primary btn-full" type="submit"><span>Submit Application</span><i class="fa-solid fa-paper-plane"></i></button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+          <div>
+            <label class="form-label">Available Duration</label>
+            <select class="form-control" id="apply-duration" style="padding-left:16px;background-image:none;">
+              <option value="">-- Select Duration --</option>
+              <option>1 Month</option>
+              <option>2 Months</option>
+              <option>3 Months</option>
+              <option>6 Months</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">LinkedIn Profile</label>
+            <input class="form-control" type="url" id="apply-linkedin" placeholder="https://linkedin.com/in/yourname" style="padding-left:16px;">
+          </div>
+        </div>
+
+        <!-- Section: About -->
+        <div style="display:flex;align-items:center;gap:10px;margin:24px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--border-color);">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;">
+            <i class="fa-solid fa-pen-to-square" style="color:var(--warning);font-size:14px;"></i>
+          </div>
+          <h3 style="font-size:15px;font-weight:700;">About You</h3>
+        </div>
+        <div style="margin-bottom:18px;">
+          <label class="form-label">Why do you want to join Speedify Tech X? <span style="color:var(--danger);">*</span></label>
+          <textarea class="form-control" id="apply-why" placeholder="Tell us your motivation, goals, and what you hope to achieve..." required style="min-height:100px;padding:12px 16px;"></textarea>
+        </div>
+        <div style="margin-bottom:28px;">
+          <label class="form-label">Any prior skills or experience? <span style="color:var(--text-muted);font-size:11px;">(optional)</span></label>
+          <textarea class="form-control" id="apply-skills" placeholder="e.g. HTML/CSS basics, Python beginner, completed a React course..." style="min-height:80px;padding:12px 16px;"></textarea>
+        </div>
+
+        <!-- Consent -->
+        <div style="background:rgba(0,242,254,0.03);border:1px solid rgba(0,242,254,0.12);border-radius:10px;padding:14px 16px;margin-bottom:24px;font-size:12.5px;color:var(--text-secondary);line-height:1.6;">
+          <i class="fa-solid fa-shield-check" style="color:var(--accent-cyan);margin-right:6px;"></i>
+          By submitting this form, you consent to Speedify Tech X collecting and storing your details for the purpose of internship selection. Your data will not be shared with third parties.
+        </div>
+
+        <button class="btn btn-primary btn-full" type="submit" style="padding:14px;font-size:15px;">
+          <span>Submit Application</span>
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
       </form>
     </div>
   </div>`;
+
   document.getElementById('form-apply').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button[type="submit"]');
@@ -530,42 +643,82 @@ function renderApplyView(container) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Submitting...</span>';
 
     const appData = {
-      id: generateId('app'),
-      fullName:        document.getElementById('apply-name').value.trim(),
-      email:           document.getElementById('apply-email').value.trim(),
-      phone:           document.getElementById('apply-phone').value.trim(),
-      role:            document.getElementById('apply-role').value,
-      university:      document.getElementById('apply-uni').value.trim(),
-      preferredCohort: '',
-      resumeLink:      '',
-      portfolioLink:   '',
-      coverLetter:     '',
-      status:    "Review",
-      appliedAt: new Date().toISOString()
+      id:           generateId('app'),
+      fullName:     document.getElementById('apply-name').value.trim(),
+      email:        document.getElementById('apply-email').value.trim(),
+      phone:        document.getElementById('apply-phone').value.trim(),
+      city:         document.getElementById('apply-city').value.trim(),
+      university:   document.getElementById('apply-uni').value.trim(),
+      degree:       document.getElementById('apply-degree').value.trim(),
+      yearOfStudy:  document.getElementById('apply-year').value,
+      gradYear:     document.getElementById('apply-grad-year').value.trim(),
+      role:         document.getElementById('apply-role').value,
+      mode:         document.getElementById('apply-mode').value,
+      duration:     document.getElementById('apply-duration').value,
+      linkedin:     document.getElementById('apply-linkedin').value.trim(),
+      whyJoin:      document.getElementById('apply-why').value.trim(),
+      skills:       document.getElementById('apply-skills').value.trim(),
+      status:       'Review',
+      appliedAt:    new Date().toISOString()
     };
 
-    // Always save locally
+    // 1. Save locally
     appState.applications.push(appData);
     saveState();
 
-    // Save to Firestore using the global firebaseDb
+    // 2. Send to Google Sheets webhook
+    const webhookUrl = (appState.config && appState.config.sheetsWebhook) || SHEETS_WEBHOOK;
+    if (webhookUrl) {
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(appData)
+        });
+        console.log('Sent to Google Sheets');
+      } catch (err) {
+        console.warn('Google Sheets webhook failed:', err);
+      }
+    }
+
+    // 3. Save to Firestore
     if (firebaseDb) {
       try {
         const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
         await addDoc(collection(firebaseDb, "applications"), appData);
-        showToast("Application saved to Firebase!", "success");
       } catch (err) {
-        console.error("Firestore write error:", err);
-        showToast("Saved locally — Firebase sync failed.", "warning");
+        console.warn("Firestore write failed:", err);
       }
-    } else {
-      showToast("Application submitted successfully!", "success");
     }
 
-    document.getElementById('form-apply').reset();
     btn.disabled = false;
     btn.innerHTML = '<span>Submit Application</span><i class="fa-solid fa-paper-plane"></i>';
-    navigateTo('#login');
+
+    // Show success screen
+    container.innerHTML = `
+    <div style="max-width:500px;margin:80px auto;padding:0 20px;text-align:center;">
+      <div class="glass-card fade-in" style="padding:48px 32px;">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(16,185,129,0.12);border:2px solid var(--success);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;">
+          <i class="fa-solid fa-circle-check" style="font-size:32px;color:var(--success);"></i>
+        </div>
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:10px;">Application Submitted!</h2>
+        <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:8px;">
+          Thank you, <strong>${appData.fullName}</strong>! Your application for <strong>${appData.role}</strong> has been received.
+        </p>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:28px;">
+          We'll review it and reach out to <strong>${appData.email}</strong> within 2–3 business days.
+        </p>
+        <div style="background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.15);border-radius:10px;padding:14px;margin-bottom:28px;font-size:13px;text-align:left;">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-color);"><span style="color:var(--text-muted);">Name</span><strong>${appData.fullName}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-color);"><span style="color:var(--text-muted);">Domain</span><strong>${appData.role}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;"><span style="color:var(--text-muted);">Status</span><span class="badge badge-pending"><i class="fa-solid fa-hourglass-half"></i> Under Review</span></div>
+        </div>
+        <button class="btn btn-primary" onclick="navigateTo('#home')" style="width:100%;">
+          <i class="fa-solid fa-house"></i> Back to Home
+        </button>
+      </div>
+    </div>`;
   });
 }
 
@@ -622,7 +775,7 @@ function renderLoginView(container) {
     );
     if (localUser) {
       currentSession.currentUser = { id: localUser.id, username: localUser.username, fullName: localUser.fullName, role: localUser.role, email: localUser.email };
-      saveSession(); showToast(`Welcome back, ${localUser.fullName}!`, "success"); navigateTo('#dashboard');
+      saveSession(); showToast(`Welcome back, ${localUser.fullName}!`, "success"); navigateTo('#portal');
       return;
     }
 
@@ -651,7 +804,7 @@ function renderLoginView(container) {
         }
         currentSession.currentUser = localUserObj; saveSession();
         showToast(`Welcome back, ${localUserObj.fullName}!`, "success");
-        navigateTo('#dashboard');
+        navigateTo('#portal');
       } catch (err) {
         btn.disabled = false;
         btn.innerHTML = '<span>Sign In</span><i class="fa-solid fa-right-from-bracket"></i>';
@@ -718,10 +871,422 @@ function renderRegisterView(container) {
       const newUser = { id: generateId('usr'), username, password, fullName, role: selectedRole, email, joinedDate: new Date().toISOString().split('T')[0], hourlyRate: 15 };
       if (selectedRole === 'student') newUser.cohort = cohort;
       appState.users.push(newUser); saveState();
-      showToast("Registration successful!", "success"); navigateTo('#login');
-    }
+      showToast("Registration successful!", "success"); navigateTo('#login');    }
   });
 }
+
+// ── NEW PORTAL: STUDENT ──────────────────────────────────────────────────────
+function renderStudentPortal(container) {
+  const freshState = localStorage.getItem('speedify_portal_state');
+  if (freshState) { try { appState = JSON.parse(freshState); } catch(e) {} }
+  const user = appState.users.find(u => u.id === currentSession.currentUser.id) || currentSession.currentUser;
+
+  // Domain detection from cohort
+  const domainMap = {
+    'web':  { icon: 'fa-globe',         color: '#00f2fe', bg: 'rgba(0,242,254,0.1)',   label: 'Web Development',       desc: 'HTML, CSS, JavaScript, React, Node.js' },
+    'app':  { icon: 'fa-mobile-screen', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)',  label: 'App Development',       desc: 'Flutter, React Native, Android, iOS' },
+    'ui':   { icon: 'fa-palette',       color: '#ec4899', bg: 'rgba(236,72,153,0.1)',  label: 'UI/UX Design',          desc: 'Figma, Adobe XD, Wireframing' },
+    'full': { icon: 'fa-layer-group',   color: '#a78bfa', bg: 'rgba(139,92,246,0.15)', label: 'Full Stack Development', desc: 'React, Node.js, Databases, REST APIs' },
+  };
+  const cohortLower = (user.cohort || '').toLowerCase();
+  let domain = null;
+  if (cohortLower.includes('web') && !cohortLower.includes('full')) domain = domainMap['web'];
+  else if (cohortLower.includes('app') || cohortLower.includes('mobile')) domain = domainMap['app'];
+  else if (cohortLower.includes('ui') || cohortLower.includes('ux') || cohortLower.includes('design')) domain = domainMap['ui'];
+  else if (cohortLower.includes('full') || cohortLower.includes('stack')) domain = domainMap['full'];
+
+  // Find matching application by email
+  const app = appState.applications.find(a => a.email && a.email.toLowerCase() === (user.email || '').toLowerCase());
+
+  const statusBadge = (s) => {
+    const map = { 'Review': ['badge-pending','fa-hourglass-half'], 'Approved': ['badge-approved','fa-circle-check'], 'Rejected': ['badge-rejected','fa-times-circle'] };
+    const [cls, ic] = map[s] || ['badge-pending','fa-circle-dot'];
+    return `<span class="badge ${cls}"><i class="fa-solid ${ic}"></i> ${s}</span>`;
+  };
+
+  const domainCardHtml = domain
+    ? `<div style="display:flex;align-items:center;gap:16px;padding:20px;background:${domain.bg};border:1px solid ${domain.color}33;border-radius:14px;">
+        <div style="width:56px;height:56px;border-radius:14px;background:${domain.bg};border:1px solid ${domain.color}44;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid ${domain.icon}" style="font-size:24px;color:${domain.color};"></i>
+        </div>
+        <div><h3 style="font-size:18px;font-weight:800;margin-bottom:4px;">${domain.label}</h3>
+        <p style="color:var(--text-muted);font-size:13px;">${domain.desc}</p></div>
+      </div>`
+    : `<p style="color:var(--text-muted);font-size:13px;padding:16px;">No domain assigned yet. Your cohort will be set by the mentor.</p>`;
+
+  const appCardHtml = app
+    ? `<div class="glass-card" style="padding:28px;margin-top:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h3 style="font-size:16px;font-weight:700;"><i class="fa-solid fa-file-lines" style="color:var(--accent-cyan);margin-right:8px;"></i>Your Application</h3>
+          ${statusBadge(app.status)}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:13.5px;">
+          <div><span style="color:var(--text-muted);">Full Name</span><p style="font-weight:600;margin-top:3px;">${app.fullName}</p></div>
+          <div><span style="color:var(--text-muted);">Email</span><p style="font-weight:600;margin-top:3px;">${app.email}</p></div>
+          <div><span style="color:var(--text-muted);">Phone</span><p style="font-weight:600;margin-top:3px;">${app.phone || '—'}</p></div>
+          <div><span style="color:var(--text-muted);">University</span><p style="font-weight:600;margin-top:3px;">${app.university || '—'}</p></div>
+          <div><span style="color:var(--text-muted);">Applied For</span><p style="font-weight:600;margin-top:3px;">${app.role}</p></div>
+          <div><span style="color:var(--text-muted);">Applied On</span><p style="font-weight:600;margin-top:3px;">${new Date(app.appliedAt).toLocaleDateString()}</p></div>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);">
+          <p style="font-size:12px;color:var(--text-muted);">
+            ${app.status === 'Review' ? '<i class="fa-solid fa-clock" style="color:var(--warning);margin-right:6px;"></i>Your application is under review. We\'ll contact you via email.' : ''}
+            ${app.status === 'Approved' ? '<i class="fa-solid fa-circle-check" style="color:var(--success);margin-right:6px;"></i>Congratulations! Your application has been approved.' : ''}
+            ${app.status === 'Rejected' ? '<i class="fa-solid fa-times-circle" style="color:var(--danger);margin-right:6px;"></i>Your application was not selected this cycle.' : ''}
+          </p>
+        </div>
+      </div>`
+    : `<div class="glass-card" style="padding:28px;margin-top:20px;text-align:center;">
+        <i class="fa-solid fa-file-circle-question" style="font-size:36px;color:var(--text-muted);margin-bottom:14px;display:block;"></i>
+        <h3 style="font-size:15px;font-weight:600;margin-bottom:8px;">No Application Found</h3>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:20px;">We couldn't find an application linked to your email address.</p>
+        <button class="btn btn-primary" onclick="navigateTo('#apply')"><i class="fa-solid fa-paper-plane"></i> Apply Now</button>
+      </div>`;
+
+  container.innerHTML = `
+  <div style="max-width:760px;margin:40px auto;padding:0 20px;">
+    <!-- Top bar -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <img src="logo.jpeg" alt="Speedify" style="width:40px;height:40px;border-radius:10px;background:#fff;object-fit:contain;">
+        <div>
+          <div style="font-size:18px;font-weight:700;">Speedify <span style="color:var(--accent-cyan);">Tech X</span></div>
+          <div style="font-size:11px;color:var(--text-muted);">Internship Portal</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary" id="portal-logout-btn" style="font-size:13px;">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+
+    <!-- Welcome card -->
+    <div class="glass-card fade-in" style="padding:32px;margin-bottom:0;">
+      <div style="display:flex;align-items:center;gap:18px;margin-bottom:24px;">
+        <div class="profile-avatar-large" style="width:64px;height:64px;font-size:26px;margin:0;">${user.fullName.charAt(0).toUpperCase()}</div>
+        <div>
+          <h1 style="font-size:24px;font-weight:800;margin-bottom:4px;">Welcome, ${user.fullName}!</h1>
+          <p style="color:var(--text-muted);font-size:13px;"><i class="fa-solid fa-envelope" style="margin-right:6px;"></i>${user.email}</p>
+          <span class="badge badge-approved" style="font-size:11px;margin-top:8px;display:inline-flex;"><i class="fa-solid fa-bolt"></i> Tech X Intern</span>
+        </div>
+      </div>
+
+      <!-- Domain -->
+      <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:12px;"><i class="fa-solid fa-layer-group" style="color:var(--accent-cyan);margin-right:8px;"></i>Your Domain</h3>
+      ${domainCardHtml}
+    </div>
+
+    <!-- Application -->
+    ${appCardHtml}
+
+    <div style="text-align:center;margin-top:28px;">
+      <a href="#home" onclick="navigateTo('#home')" style="font-size:13px;color:var(--text-muted);text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </div>
+  </div>`;
+
+  document.getElementById('portal-logout-btn').addEventListener('click', () => {
+    currentSession.currentUser = null; saveSession();
+    showToast("Logged out.", "info"); navigateTo('#login');
+  });
+}
+
+// ── NEW PORTAL: MENTOR ──────────────────────────────────────────────────────
+function renderMentorPortal(container) {
+  const freshState = localStorage.getItem('speedify_portal_state');
+  if (freshState) { try { appState = JSON.parse(freshState); } catch(e) {} }
+  const user = appState.users.find(u => u.id === currentSession.currentUser.id) || currentSession.currentUser;
+  const apps = appState.applications;
+  const students = appState.users.filter(u => u.role === 'student');
+
+  const statusBadge = (s) => {
+    const map = { 'Review': ['badge-pending','fa-hourglass-half'], 'Approved': ['badge-approved','fa-circle-check'], 'Rejected': ['badge-rejected','fa-times-circle'] };
+    const [cls, ic] = map[s] || ['badge-pending','fa-circle-dot'];
+    return `<span class="badge ${cls}"><i class="fa-solid ${ic}"></i> ${s}</span>`;
+  };
+
+  container.innerHTML = `
+  <div style="max-width:900px;margin:40px auto;padding:0 20px;">
+    <!-- Top bar -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <img src="logo.jpeg" alt="Speedify" style="width:40px;height:40px;border-radius:10px;background:#fff;object-fit:contain;">
+        <div>
+          <div style="font-size:18px;font-weight:700;">Speedify <span style="color:var(--accent-cyan);">Tech X</span></div>
+          <div style="font-size:11px;color:var(--text-muted);">Admin Portal</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary" id="portal-logout-btn" style="font-size:13px;">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+
+    <!-- Welcome -->
+    <div class="glass-card fade-in" style="padding:28px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:18px;">
+        <div class="profile-avatar-large" style="width:64px;height:64px;font-size:26px;margin:0;background:linear-gradient(135deg,#7c3aed,#a78bfa);">${user.fullName.charAt(0).toUpperCase()}</div>
+        <div>
+          <h1 style="font-size:22px;font-weight:800;margin-bottom:4px;">Welcome, ${user.fullName}!</h1>
+          <p style="color:var(--text-muted);font-size:13px;">${user.designation || 'Lead Mentor'} &nbsp;·&nbsp; ${user.department || 'Engineering'}</p>
+          <span class="badge" style="font-size:11px;margin-top:8px;display:inline-flex;background:rgba(155,81,224,0.12);color:var(--accent-purple);border:1px solid rgba(155,81,224,0.3);">
+            <i class="fa-solid fa-shield-halved"></i> Staff Administrator
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
+      <div class="glass-card" style="padding:20px;text-align:center;">
+        <div style="font-size:30px;font-weight:900;color:var(--accent-cyan);">${apps.length}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Total Applications</div>
+      </div>
+      <div class="glass-card" style="padding:20px;text-align:center;">
+        <div style="font-size:30px;font-weight:900;color:var(--warning);">${apps.filter(a=>a.status==='Review').length}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Under Review</div>
+      </div>
+      <div class="glass-card" style="padding:20px;text-align:center;">
+        <div style="font-size:30px;font-weight:900;color:var(--success);">${students.length}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Registered Interns</div>
+      </div>
+    </div>
+
+    <!-- Google Sheets Webhook Config -->
+    <div class="glass-card" style="padding:24px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;border:1px solid rgba(16,185,129,0.2);">
+          <i class="fa-solid fa-table" style="color:var(--success);font-size:15px;"></i>
+        </div>
+        <div>
+          <h3 style="font-size:15px;font-weight:700;">Google Sheets Webhook</h3>
+          <p style="font-size:12px;color:var(--text-muted);">Applications will be auto-sent to your Google Sheet on submission</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input class="form-control" type="url" id="sheets-webhook-input" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+          value="${(appState.config && appState.config.sheetsWebhook) || ''}"
+          style="padding-left:16px;flex:1;font-size:13px;">
+        <button class="btn btn-primary" id="btn-save-webhook" style="white-space:nowrap;">
+          <i class="fa-solid fa-floppy-disk"></i> Save
+        </button>
+      </div>
+      <div style="margin-top:12px;background:rgba(0,0,0,0.2);border-radius:8px;padding:12px;font-size:12px;color:var(--text-muted);line-height:1.7;">
+        <strong style="color:var(--text-secondary);">How to set up:</strong><br>
+        1. Open <a href="https://script.google.com" target="_blank" style="color:var(--accent-cyan);">script.google.com</a> → New Project<br>
+        2. Paste the Apps Script code (see below), click <strong>Deploy → New Deployment → Web App</strong><br>
+        3. Set access to <strong>"Anyone"</strong>, copy the Web App URL and paste it above<br>
+        <button onclick="showGASModal()" class="btn btn-secondary" style="margin-top:8px;font-size:11px;padding:5px 12px;">
+          <i class="fa-solid fa-code"></i> View Apps Script Code
+        </button>
+      </div>
+    </div>
+
+    <!-- Applications list -->
+    <div class="glass-card" style="padding:28px;" id="admin-apps-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+        <h3 style="font-size:16px;font-weight:700;"><i class="fa-solid fa-table-cells" style="color:var(--accent-cyan);margin-right:8px;"></i>All Applications</h3>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-secondary" id="btn-export-apps-csv" style="font-size:12px;padding:8px 14px;">
+            <i class="fa-solid fa-file-csv"></i> Export CSV
+          </button>
+          <button class="btn btn-secondary" id="btn-resync-sheets" style="font-size:12px;padding:8px 14px;">
+            <i class="fa-solid fa-rotate"></i> Re-sync to Sheets
+          </button>
+        </div>
+      </div>
+      <div id="admin-apps-inner">
+        <p style="text-align:center;color:var(--text-muted);padding:32px;">Loading...</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:28px;margin-bottom:40px;">
+      <a href="#home" onclick="navigateTo('#home')" style="font-size:13px;color:var(--text-muted);text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </div>
+  </div>`;
+
+  document.getElementById('portal-logout-btn').addEventListener('click', () => {
+    currentSession.currentUser = null; saveSession();
+    showToast("Logged out.", "info"); navigateTo('#login');
+  });
+
+  // Save webhook URL
+  const btnSaveWebhook = document.getElementById('btn-save-webhook');
+  if (btnSaveWebhook) {
+    btnSaveWebhook.addEventListener('click', () => {
+      const url = document.getElementById('sheets-webhook-input').value.trim();
+      if (!appState.config) appState.config = {};
+      appState.config.sheetsWebhook = url;
+      saveState();
+      showToast(url ? 'Webhook URL saved! New applications will sync to Google Sheets.' : 'Webhook URL cleared.', 'success');
+    });
+  }
+
+  // Show Apps Script code modal
+  window.showGASModal = function() {
+    const SHEET_ID = '1gfEBO6NecgUSvuLJsPn5GdnpdHntRJplK8sGbyz8vvw';
+    const code = `// Speedify Tech X — Google Sheets Integration
+// Spreadsheet ID is hardcoded — no need to link manually
+
+var SPREADSHEET_ID = "${SHEET_ID}";
+
+function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sheet = ss.getSheetByName("Applications");
+    if (!sheet) {
+      sheet = ss.insertSheet("Applications");
+      sheet.appendRow(["S.No","ID","Full Name","Email","Phone","City",
+        "University","Degree","Year of Study","Grad Year",
+        "Domain","Mode","Duration","LinkedIn",
+        "Why Join","Skills","Status","Applied At"]);
+      var header = sheet.getRange(1, 1, 1, 18);
+      header.setBackground("#1a1a2e");
+      header.setFontColor("#00f2fe");
+      header.setFontWeight("bold");
+      sheet.setFrozenRows(1);
+    }
+    var data = JSON.parse(e.postData.contents);
+    var sno = sheet.getLastRow(); // row 1 = header, so sno starts at 1
+    sheet.appendRow([
+      sno,
+      data.id          || "",
+      data.fullName    || "",
+      data.email       || "",
+      data.phone       || "",
+      data.city        || "",
+      data.university  || "",
+      data.degree      || "",
+      data.yearOfStudy || "",
+      data.gradYear    || "",
+      data.role        || "",
+      data.mode        || "",
+      data.duration    || "",
+      data.linkedin    || "",
+      data.whyJoin     || "",
+      data.skills      || "",
+      data.status      || "Review",
+      data.appliedAt   || new Date().toISOString()
+    ]);
+    sheet.autoResizeColumns(1, 18);
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "ok" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function testSheet() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  Logger.log("Connected: " + ss.getName());
+}`;
+    showModal('Google Apps Script Code', '<p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:12px;">Copy this into your Google Apps Script project (Code.gs):</p><pre style="background:rgba(0,0,0,0.4);padding:16px;border-radius:8px;font-size:11.5px;overflow-x:auto;white-space:pre-wrap;color:#a5f3fc;line-height:1.6;">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre><button class="btn btn-primary btn-full" style="margin-top:16px;" onclick="navigator.clipboard.writeText(document.querySelector(\'.modal-body pre\').innerText);showToast(\'Copied!\',\'success\')"><i class="fa-solid fa-copy"></i> Copy Code</button>');
+  };
+    }
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.id, data.fullName, data.email, data.phone, data.city,
+      data.university, data.degree, data.yearOfStudy, data.gradYear,
+      data.role, data.mode, data.duration, data.linkedin,
+      data.whyJoin, data.skills, data.status, data.appliedAt
+    ]);
+    return ContentService.createTextOutput(JSON.stringify({status:"ok"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status:"error",message:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+    showModal('Google Apps Script Code', '<p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:12px;">Copy this code into your Google Apps Script project:</p><pre style="background:rgba(0,0,0,0.4);padding:16px;border-radius:8px;font-size:11.5px;overflow-x:auto;white-space:pre-wrap;color:#a5f3fc;line-height:1.6;">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre><button class="btn btn-primary btn-full" style="margin-top:16px;" onclick="navigator.clipboard.writeText(`' + code.replace(/`/g,'\\`') + '`);showToast(\'Copied!\',\'success\')"><i class="fa-solid fa-copy"></i> Copy Code</button>');
+  };
+
+  // Export CSV
+  const btnExportCsv = document.getElementById('btn-export-apps-csv');
+  if (btnExportCsv) {
+    btnExportCsv.addEventListener('click', () => {
+      if (apps.length === 0) { showToast('No applications to export.', 'info'); return; }
+      const headers = ['ID','Full Name','Email','Phone','City','University','Degree','Year','Grad Year','Domain','Mode','Duration','LinkedIn','Why Join','Skills','Status','Applied At'];
+      const rows = apps.map(a => [
+        a.id, a.fullName, a.email, a.phone, a.city, a.university, a.degree,
+        a.yearOfStudy, a.gradYear, a.role, a.mode, a.duration, a.linkedin,
+        (a.whyJoin||'').replace(/,/g,' ').replace(/\n/g,' '),
+        (a.skills||'').replace(/,/g,' ').replace(/\n/g,' '),
+        a.status, a.appliedAt
+      ]);
+      const csv = [headers, ...rows].map(r => r.map(v => '"'+(v||'')+'"').join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url;
+      a.download = 'speedify_applications_' + new Date().toISOString().split('T')[0] + '.csv';
+      a.click(); URL.revokeObjectURL(url);
+      showToast('CSV downloaded!', 'success');
+    });
+  }
+
+  // Re-sync all applications to Google Sheets
+  const btnResync = document.getElementById('btn-resync-sheets');
+  if (btnResync) {
+    btnResync.addEventListener('click', async () => {
+      const webhookUrl = appState.config && appState.config.sheetsWebhook;
+      if (!webhookUrl) { showToast('No webhook URL set. Add it above first.', 'error'); return; }
+      if (apps.length === 0) { showToast('No applications to sync.', 'info'); return; }
+      btnResync.disabled = true;
+      btnResync.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing...';
+      let ok = 0;
+      for (const a of apps) {
+        try {
+          await fetch(webhookUrl, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(a) });
+          ok++;
+        } catch(err) { console.warn('Sync failed for', a.id, err); }
+      }
+      btnResync.disabled = false;
+      btnResync.innerHTML = '<i class="fa-solid fa-rotate"></i> Re-sync to Sheets';
+      showToast('Synced ' + ok + ' of ' + apps.length + ' applications to Google Sheets.', 'success');
+    });
+  }
+
+  // Build applications table
+  const adminAppsInner = document.getElementById('admin-apps-inner');
+  if (adminAppsInner) {
+    if (apps.length === 0) {
+      adminAppsInner.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:32px;">No applications received yet.</p>';
+    } else {
+      let rows = '';
+      apps.forEach(function(a) {
+        const sel_r = a.status === 'Review'   ? 'selected' : '';
+        const sel_a = a.status === 'Approved' ? 'selected' : '';
+        const sel_j = a.status === 'Rejected' ? 'selected' : '';
+        rows += '<tr>' +
+          '<td><strong>' + a.fullName + '</strong><div style="font-size:11px;color:var(--text-muted);">' + (a.city||'') + '</div></td>' +
+          '<td><div>' + a.email + '</div><div style="font-size:11px;color:var(--text-muted);">' + (a.phone||'') + '</div></td>' +
+          '<td>' + a.role + '</td>' +
+          '<td><div>' + (a.university||'—') + '</div><div style="font-size:11px;color:var(--text-muted);">' + (a.degree||'') + ' · ' + (a.yearOfStudy||'') + '</div></td>' +
+          '<td>' + new Date(a.appliedAt).toLocaleDateString() + '</td>' +
+          '<td>' + statusBadge(a.status) + '</td>' +
+          '<td style="display:flex;gap:6px;align-items:center;">' +
+          '<select class="form-control" style="padding:6px 8px;font-size:12px;width:110px;" onchange="updateAppStatus(\'' + a.id + '\', this.value)">' +
+          '<option ' + sel_r + '>Review</option>' +
+          '<option ' + sel_a + '>Approved</option>' +
+          '<option ' + sel_j + '>Rejected</option>' +
+          '</select>' +
+          '<button class="btn btn-secondary" style="padding:5px 8px;font-size:11px;white-space:nowrap;" onclick="viewAppDetails(\'' + a.id + '\')">' +
+          '<i class="fa-solid fa-eye"></i></button>' +
+          '</td></tr>';
+      });
+      adminAppsInner.innerHTML = '<div class="table-responsive"><table class="custom-table"><thead><tr>' +
+        '<th>Name</th><th>Email / Phone</th><th>Domain</th><th>College / Degree</th><th>Applied On</th><th>Status</th><th>Action</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+    }
+  }
+}
+
+window.updateAppStatus = function(appId, newStatus) {
+  const app = appState.applications.find(a => a.id === appId);
+  if (!app) return;
+  app.status = newStatus;
+  saveState();
+  showToast(`Application status updated to "${newStatus}".`, 'success');
+};
 
 // 4. STUDENT DASHBOARD
 function renderStudentDashboard(container) {
@@ -736,9 +1301,109 @@ function renderStudentDashboard(container) {
   let isCheckedIn = !!checkInTime;
   let isCheckedOut = !!checkOutTime;
 
+  const domainMap = {
+    'web':  { icon: 'fa-globe',        color: '#00f2fe', bg: 'rgba(0,242,254,0.1)',   label: 'Web Development',      desc: 'HTML, CSS, JavaScript, React, Node.js' },
+    'app':  { icon: 'fa-mobile-screen',color: '#3b82f6', bg: 'rgba(59,130,246,0.1)',  label: 'App Development',      desc: 'Flutter, React Native, Android, iOS' },
+    'ui':   { icon: 'fa-palette',      color: '#ec4899', bg: 'rgba(236,72,153,0.1)',  label: 'UI/UX Design',         desc: 'Figma, Adobe XD, Wireframing, Prototyping' },
+    'full': { icon: 'fa-layer-group',  color: '#a78bfa', bg: 'rgba(139,92,246,0.15)', label: 'Full Stack Development',desc: 'React, Node.js, Databases, REST APIs' },
+  };
+  const cohortLower = (student.cohort || '').toLowerCase();
+  let matchedDomain = null;
+  if (cohortLower.includes('web') && !cohortLower.includes('full')) matchedDomain = domainMap['web'];
+  else if (cohortLower.includes('app') || cohortLower.includes('mobile')) matchedDomain = domainMap['app'];
+  else if (cohortLower.includes('ui') || cohortLower.includes('ux') || cohortLower.includes('design')) matchedDomain = domainMap['ui'];
+  else if (cohortLower.includes('full') || cohortLower.includes('stack')) matchedDomain = domainMap['full'];
+
+  const domainDisplayHtml = matchedDomain
+    ? '<div style="display:flex;align-items:center;gap:20px;">' +
+      '<div style="width:64px;height:64px;border-radius:16px;background:' + matchedDomain.bg + ';border:1px solid ' + matchedDomain.color + '33;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+      '<i class="fa-solid ' + matchedDomain.icon + '" style="font-size:26px;color:' + matchedDomain.color + ';"></i></div>' +
+      '<div><h2 style="font-size:22px;font-weight:800;margin-bottom:4px;">' + matchedDomain.label + '</h2>' +
+      '<p style="color:var(--text-muted);font-size:13px;">' + matchedDomain.desc + '</p></div></div>'
+    : '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">' +
+      Object.values(domainMap).map(function(d) {
+        return '<div style="background:' + d.bg + ';border:1px solid ' + d.color + '33;border-radius:12px;padding:16px;text-align:center;">' +
+               '<i class="fa-solid ' + d.icon + '" style="font-size:22px;color:' + d.color + ';margin-bottom:8px;display:block;"></i>' +
+               '<p style="font-size:13px;font-weight:700;">' + d.label + '</p></div>';
+      }).join('') + '</div>';
+
   container.innerHTML = `
+<!-- TAB HOME: STUDENT PROFILE CARD (shown on login) -->
+<div id="student-home" class="dashboard-tab">
+  <div class="view-header">
+    <div class="view-title"><h1>Welcome, ${student.fullName.split(' ')[0]}!</h1><p>Your internship profile at Speedify Tech X.</p></div>
+    <div class="badge badge-approved"><i class="fa-solid fa-bolt"></i> Speedify Intern</div>
+  </div>
+  <div style="display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start;">
+    <!-- Profile card -->
+    <div class="glass-card" style="padding:32px;text-align:center;">
+      <div class="profile-avatar-large" style="margin:0 auto 16px;">${student.fullName.charAt(0).toUpperCase()}</div>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:4px;">${student.fullName}</h2>
+      <p style="color:var(--text-muted);font-size:13px;margin-bottom:6px;">Tech X Intern</p>
+      <span class="badge badge-approved" style="font-size:11px;margin-bottom:20px;display:inline-flex;"><i class="fa-solid fa-circle-check"></i> Active Account</span>
+      <div style="border-top:1px solid var(--border-color);padding-top:20px;text-align:left;display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+          <i class="fa-solid fa-envelope" style="color:var(--accent-cyan);width:16px;"></i>
+          <span style="color:var(--text-muted);">Email</span>
+          <strong style="margin-left:auto;text-align:right;max-width:180px;overflow:hidden;text-overflow:ellipsis;">${student.email || 'N/A'}</strong>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+          <i class="fa-solid fa-user" style="color:var(--accent-cyan);width:16px;"></i>
+          <span style="color:var(--text-muted);">Username</span>
+          <strong style="margin-left:auto;"><code>${student.username}</code></strong>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+          <i class="fa-solid fa-users-rectangle" style="color:var(--accent-cyan);width:16px;"></i>
+          <span style="color:var(--text-muted);">Cohort</span>
+          <strong style="margin-left:auto;">${student.cohort || 'N/A'}</strong>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+          <i class="fa-solid fa-calendar" style="color:var(--accent-cyan);width:16px;"></i>
+          <span style="color:var(--text-muted);">Joined</span>
+          <strong style="margin-left:auto;">${student.joinedDate || 'N/A'}</strong>
+        </div>
+      </div>
+    </div>
+    <!-- Domain + details panel -->
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <!-- Domain card -->
+      <div class="glass-card" style="padding:28px;">
+        <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:20px;"><i class="fa-solid fa-layer-group" style="color:var(--accent-cyan);margin-right:8px;"></i>Your Domain</h3>
+        <div id="student-domain-display">
+          ${domainDisplayHtml}
+        </div>
+      </div>
+      <!-- Quick stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+        <div class="glass-card" style="padding:20px;text-align:center;">
+          <div style="font-size:28px;font-weight:900;color:var(--accent-cyan);" id="home-tasks-done">0</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Tasks Done</div>
+        </div>
+        <div class="glass-card" style="padding:20px;text-align:center;">
+          <div style="font-size:28px;font-weight:900;color:var(--success);" id="home-reports-approved">0</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Reports Approved</div>
+        </div>
+        <div class="glass-card" style="padding:20px;text-align:center;">
+          <div style="font-size:28px;font-weight:900;color:var(--accent-purple);" id="home-attendance-pct">0%</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Attendance</div>
+        </div>
+      </div>
+      <!-- Program info -->
+      <div class="glass-card" style="padding:24px;">
+        <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:16px;"><i class="fa-solid fa-circle-info" style="color:var(--accent-purple);margin-right:8px;"></i>Program Info</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-color);"><span style="color:var(--text-muted);">Organization</span><strong>Speedify Tech X</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-color);"><span style="color:var(--text-muted);">Registration</span><strong style="color:var(--success);">MSME Registered</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-color);"><span style="color:var(--text-muted);">Support Email</span><a href="mailto:speedifytechx@gmail.com" style="color:var(--accent-cyan);">speedifytechx@gmail.com</a></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="color:var(--text-muted);">Phone</span><a href="tel:+918610535231" style="color:var(--accent-cyan);">+91 8610535231</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- TAB 1: OVERVIEW -->
-<div id="student-overview" class="dashboard-tab">
+<div id="student-overview" class="dashboard-tab" style="display:none;">
   <div class="view-header">
     <div class="view-title"><h1>Intern Overview</h1><p>Welcome back, ${student.fullName}! Access your active progress parameters.</p></div>
     <div class="badge badge-approved"><i class="fa-solid fa-bolt"></i> Speedify Intern</div>
@@ -789,6 +1454,11 @@ function renderStudentDashboard(container) {
           <div class="file-upload-content" id="screenshot-box-content"><i class="fa-regular fa-image"></i><span>Add Screenshot</span><p>PNG, JPG up to 10MB</p></div>
           <div class="file-preview" id="screenshot-preview-container"><img id="screenshot-preview-img" src="" alt="Preview"></div>
           <div class="file-preview-name" id="screenshot-file-name"></div>
+        </div>
+        <div class="file-upload-box" id="report-video-upload-box">
+          <input type="file" id="report-video-file" accept="video/*">
+          <div class="file-upload-content" id="report-video-box-content"><i class="fa-regular fa-file-video"></i><span>Upload Progress Video</span><p>MP4, WebM up to 100MB</p></div>
+          <div class="file-preview-name" id="report-video-file-name"></div>
         </div>
         <div style="flex:1; display:flex; flex-direction:column; justify-content:center; border:2px dashed var(--border-color); border-radius:12px; padding:20px; background:rgba(8,12,20,0.3); transition:all 0.3s ease;">
           <label class="form-label" style="margin-bottom:10px;"><i class="fa-solid fa-link" style="margin-right:6px; color:var(--accent-cyan);"></i>Links</label>
@@ -844,10 +1514,19 @@ function renderStudentDashboard(container) {
   <div class="view-header"><div class="view-title"><h1>My Assigned Tasks</h1><p>Review tasks assigned by the mentor and toggle completion checkmarks.</p></div></div>
   <div class="glass-card"><div class="task-list" id="assigned-tasks-list"></div></div>
 </div>
-<!-- TAB 5: TRAINING VIDEOS -->
+<!-- TAB 5: TRAINING VIDEOS & RESOURCES -->
 <div id="student-videos" class="dashboard-tab" style="display:none;">
-  <div class="view-header"><div class="view-title"><h1>Training Videos</h1><p>Watch recorded sessions and lectures uploaded by your mentor.</p></div></div>
-  <div id="student-videos-grid" class="resource-grid"></div>
+  <div class="view-header"><div class="view-title"><h1>Training Videos &amp; Resources</h1><p>Watch recorded sessions, lectures, and access links shared by your mentor.</p></div></div>
+  <!-- Videos sub-section -->
+  <div style="margin-bottom:28px;">
+    <h3 style="font-size:15px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;"><i class="fa-solid fa-play-circle" style="color:var(--accent-cyan);margin-right:8px;"></i>Video Lectures</h3>
+    <div id="student-videos-grid" class="resource-grid"></div>
+  </div>
+  <!-- Links sub-section -->
+  <div>
+    <h3 style="font-size:15px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;"><i class="fa-solid fa-link" style="color:var(--success);margin-right:8px;"></i>Resource Links &amp; Docs</h3>
+    <div id="student-links-grid" class="resource-grid"></div>
+  </div>
 </div>
 <!-- TAB 5b: RESOURCE LIBRARY (hidden, kept for data) -->
 <div id="student-resources" class="dashboard-tab" style="display:none;">
@@ -954,29 +1633,8 @@ function renderStudentDashboard(container) {
     <div class="table-responsive"><table class="custom-table"><thead><tr><th>Date</th><th>Hours</th><th style="width:40%;">Summary</th><th>Attachments</th><th>Status</th><th>Feedback</th></tr></thead><tbody id="student-history-tbody"></tbody></table></div>
   </div>
 </div>
-<!-- TAB 8: PROFILE -->
-<div id="student-profile" class="dashboard-tab" style="display:none;">
-  <div class="view-header"><div class="view-title"><h1>My Personal Profile</h1><p>Manage contact information and verify enrolled cohort status.</p></div></div>
-  <div class="profile-container">
-    <div class="glass-card profile-sidebar">
-      <div class="profile-avatar-large" id="sp-avatar">A</div>
-      <h2 id="sp-name">Student Full Name</h2><p id="sp-role-txt">Tech X Intern</p>
-      <div style="border-top:1px solid var(--border-color);padding-top:16px;margin-top:16px;text-align:left;font-size:13px;">
-        <p style="margin-bottom:8px;"><strong style="color:var(--text-secondary);">University:</strong> <span id="sp-sidebar-uni">...</span></p>
-        <p><strong style="color:var(--text-secondary);">Joined Date:</strong> <span id="sp-sidebar-joined">...</span></p>
-      </div>
-    </div>
-    <div class="glass-card profile-detail-card">
-      <h3 style="font-size:16px;font-weight:600;margin-bottom:20px;border-bottom:1px solid var(--border-color);padding-bottom:10px;">Enrolled Student Details</h3>
-      <div class="profile-info-grid">
-        <div class="profile-info-item"><h4>Email Address</h4><p id="sp-detail-email">...</p></div>
-        <div class="profile-info-item"><h4>Phone Contact</h4><p id="sp-detail-phone">...</p></div>
-        <div class="profile-info-item"><h4>Username</h4><p id="sp-detail-username">...</p></div>
-        <div class="profile-info-item"><h4>Assigned Cohort</h4><p id="sp-detail-cohort">...</p></div>
-      </div>
-    </div>
-  </div>
-</div>`;
+<!-- TAB 8: (removed profile — shown on login home tab) -->
+`;
 
   // --- STUDENT LOGIC WIRE-UP ---
   function updateClock() {
@@ -1039,9 +1697,27 @@ function renderStudentDashboard(container) {
     }
   });
 
+  // Progress video upload
+  const reportVideoInput = document.getElementById('report-video-file');
+  const reportVideoBoxContent = document.getElementById('report-video-box-content');
+  const reportVideoFileName = document.getElementById('report-video-file-name');
+  reportVideoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      reportVideoBoxContent.querySelector('i').style.color = 'var(--accent-cyan)';
+      reportVideoBoxContent.querySelector('span').innerText = 'Video Selected';
+      reportVideoFileName.innerText = file.name;
+      reportVideoFileName.style.display = 'block';
+    }
+  });
+
   document.getElementById('btn-reset-report').addEventListener('click', () => {
     ssBoxContent.style.display = 'block'; ssPreviewContainer.style.display = 'none'; ssPreviewImg.src = '';
     ssFileName.innerText = ''; ssFileName.style.display = 'none';
+    // Reset video upload too
+    reportVideoBoxContent.querySelector('i').style.color = '';
+    reportVideoBoxContent.querySelector('span').innerText = 'Upload Progress Video';
+    reportVideoFileName.innerText = ''; reportVideoFileName.style.display = 'none';
     const ghInput = document.getElementById('report-github');
     if (ghInput) ghInput.value = '';
   });
@@ -1053,11 +1729,28 @@ function renderStudentDashboard(container) {
     const githubLink = document.getElementById('report-github').value.trim();
     if (appState.reports.some(r => r.userId === student.id && r.date === dateVal)) { showToast(`Report for ${dateVal} already submitted.`, "error"); return; }
     const ssFile = ssInput.files[0];
+    const vidFile = reportVideoInput.files[0];
+
+    // Store video in sessionStorage blob reference to survive page interactions
+    let videoUrl = '';
+    let videoName = '';
+    if (vidFile) {
+      videoName = vidFile.name;
+      const blobUrl = URL.createObjectURL(vidFile);
+      const sessionKey = 'rep_vid_' + Date.now();
+      // Read as data URL for persistence (may be large; use blob URL for playback during session)
+      videoUrl = '__rep_session:' + sessionKey;
+      const vidReader = new FileReader();
+      vidReader.onload = (ev) => { sessionStorage.setItem(sessionKey, ev.target.result); };
+      vidReader.readAsDataURL(vidFile);
+    }
+
     const newReport = {
       id: generateId('rep'), userId: student.id, studentName: student.fullName,
       date: dateVal, summary: summaryVal, hoursWorked: 0,
       githubLink: githubLink || "",
-      videoName: "", videoUrl: "",
+      videoName: videoName,
+      videoUrl: videoUrl,
       screenshotName: ssFile ? ssFile.name : "", screenshotUrl: ssFile ? ssPreviewImg.src : "",
       status: "pending", feedback: "", createdAt: new Date().toISOString()
     };
@@ -1142,7 +1835,9 @@ function renderStudentDashboard(container) {
 
   function populateStudentVideos() {
     const videos = appState.resources.filter(r => r.type === 'video');    // Full videos tab
+    const linksAndDocs = appState.resources.filter(r => r.type !== 'video'); // Links & docs
     const grid = document.getElementById('student-videos-grid');
+    const linksGrid = document.getElementById('student-links-grid');
     if (grid) {
       if (videos.length === 0) {
         grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);"><i class="fa-solid fa-video" style="font-size:40px;margin-bottom:14px;display:block;opacity:0.3;"></i><p>No training videos uploaded yet.<br>Check back soon!</p></div>`;
@@ -1155,11 +1850,36 @@ function renderStudentDashboard(container) {
               <p class="resource-desc">${r.description}</p>
               <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;"><i class="fa-solid fa-user" style="margin-right:4px;"></i>${r.postedBy} &nbsp;·&nbsp; ${new Date(r.postedAt).toLocaleDateString()}</p>
             </div>
-            <button class="btn btn-primary btn-full" onclick="playResourceVideo('${r.id}')"><i class="fa-solid fa-play"></i> Watch Now</button>
+            <div>
+              <button class="btn btn-primary btn-full" style="margin-bottom:8px;" onclick="playResourceVideo('${r.id}')"><i class="fa-solid fa-play"></i> Watch Now</button>
+              ${r.linkUrl ? `<a href="${r.linkUrl}" target="_blank" class="btn btn-secondary btn-full"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Link</a>` : ''}
+            </div>
           </div>`).join('');
       }
     }
-    // Overview preview (latest 3)
+    if (linksGrid) {
+      if (linksAndDocs.length === 0) {
+        linksGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);"><i class="fa-solid fa-link" style="font-size:40px;margin-bottom:14px;display:block;opacity:0.3;"></i><p>No resource links shared yet.</p></div>`;
+      } else {
+        linksGrid.innerHTML = linksAndDocs.map(r => {
+          const iconClass = r.type === 'doc' ? 'fa-file-lines' : 'fa-link';
+          const badgeClass = r.type === 'doc' ? 'res-doc' : 'res-link';
+          return `
+          <div class="glass-card resource-card">
+            <div>
+              <div class="resource-badge ${badgeClass}" style="margin-bottom:12px;"><i class="fa-solid ${iconClass}"></i> ${r.type.toUpperCase()}</div>
+              <h4 class="resource-title">${r.title}</h4>
+              <p class="resource-desc">${r.description}</p>
+              <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;"><i class="fa-solid fa-user" style="margin-right:4px;"></i>${r.postedBy} &nbsp;·&nbsp; ${new Date(r.postedAt).toLocaleDateString()}</p>
+            </div>
+            <div>
+              ${r.linkUrl ? `<a href="${r.linkUrl}" target="_blank" class="btn btn-primary btn-full"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Resource</a>` : `<p style="font-size:12px;color:var(--text-muted);font-style:italic;">No link provided.</p>`}
+            </div>
+          </div>`;
+        }).join('');
+      }
+    }
+    // Overview preview (latest 3 videos)
     const overviewList = document.getElementById('overview-videos-list');
     if (overviewList) {
       if (videos.length === 0) {
@@ -1190,7 +1910,18 @@ function renderStudentDashboard(container) {
       videoUrl = sessionStorage.getItem('res_video_' + videoUrl.replace('__session:', '')) || '';
     }
     if (!videoUrl && resource.linkUrl) videoUrl = resource.linkUrl;
-    showModal(resource.title, `<div class="modal-media-wrapper">${videoUrl ? `<video src="${videoUrl}" controls autoplay style="width:100%;max-height:400px;"></video>` : `<p style="padding:24px;text-align:center;color:var(--text-muted);">Video unavailable — session expired. Please re-upload.</p>`}</div><p style="font-size:13px;color:var(--text-secondary);margin-top:12px;">${resource.description}</p>`);
+
+    // Detect YouTube links — embed as iframe instead of <video>
+    let mediaHtml = '';
+    const ytMatch = videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (ytMatch) {
+      mediaHtml = '<iframe width="100%" height="380" src="https://www.youtube.com/embed/' + ytMatch[1] + '" frameborder="0" allowfullscreen style="border-radius:8px;"></iframe>';
+    } else if (videoUrl) {
+      mediaHtml = '<video src="' + videoUrl + '" controls autoplay style="width:100%;max-height:400px;"></video>';
+    } else {
+      mediaHtml = '<p style="padding:24px;text-align:center;color:var(--text-muted);">Video unavailable — session expired. Please re-upload or add a link.</p>';
+    }
+    showModal(resource.title, '<div class="modal-media-wrapper">' + mediaHtml + '</div><p style="font-size:13px;color:var(--text-secondary);margin-top:12px;">' + resource.description + '</p>');
   };
 
   function populateStudentEarnings() {
@@ -1237,23 +1968,35 @@ function renderStudentDashboard(container) {
   window.previewVideo = function(reportId) {
     const report = appState.reports.find(r => r.id === reportId);
     if (!report) return;
-    let sourceUrl = report.videoUrl;
-    if (!sourceUrl && report.videoName) sourceUrl = sessionBlobs[report.videoName] || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
-    showModal(`Video Demo: ${report.videoName || 'Demo Video'}`, `<div class="modal-media-wrapper"><video src="${sourceUrl}" controls autoplay></video></div><p style="font-size:13px;color:var(--text-secondary);">${report.summary}</p>`);
+    let sourceUrl = report.videoUrl || '';
+    // Resolve new __rep_session: format (student-uploaded progress videos)
+    if (sourceUrl.startsWith('__rep_session:')) {
+      const sessionKey = sourceUrl.replace('__rep_session:', '');
+      sourceUrl = sessionStorage.getItem(sessionKey) || '';
+    }
+    // Legacy fallback
+    if (!sourceUrl && report.videoName) sourceUrl = sessionBlobs[report.videoName] || '';
+    const videoHtml = sourceUrl
+      ? `<video src="${sourceUrl}" controls autoplay style="width:100%;max-height:400px;"></video>`
+      : `<p style="padding:24px;text-align:center;color:var(--text-muted);">Video unavailable — session expired or no video attached.</p>`;
+    showModal('Progress Video: ' + (report.videoName || 'Demo Video'), '<div class="modal-media-wrapper">' + videoHtml + '</div><p style="font-size:13px;color:var(--text-secondary);margin-top:12px;">' + report.summary + '</p>');
   };
 
   document.getElementById('history-search').addEventListener('input', populateStudentHistory);
   document.getElementById('history-filter-status').addEventListener('change', populateStudentHistory);
 
-  function populateStudentProfileData() {
-    document.getElementById('sp-avatar').innerText = student.fullName.charAt(0).toUpperCase();
-    document.getElementById('sp-name').innerText = student.fullName;
-    document.getElementById('sp-sidebar-uni').innerText = student.university || 'N/A';
-    document.getElementById('sp-sidebar-joined').innerText = student.joinedDate || 'N/A';
-    document.getElementById('sp-detail-email').innerText = student.email || 'N/A';
-    document.getElementById('sp-detail-phone').innerText = student.phone || 'N/A';
-    document.getElementById('sp-detail-username').innerText = student.username;
-    document.getElementById('sp-detail-cohort').innerText = student.cohort || 'N/A';
+  function populateStudentHomeStats() {
+    const myTasks = appState.tasks.filter(t => t.assignedTo === student.id);
+    const myReports = appState.reports.filter(r => r.userId === student.id);
+    const myAttendance = appState.attendance.filter(a => a.userId === student.id);
+    const completedTasks = myTasks.filter(t => t.status === 'completed').length;
+    const approvedReports = myReports.filter(r => r.status === 'approved').length;
+    const attendedDays = myAttendance.filter(a => a.status === 'present' || a.status === 'late').length;
+    const attPct = Math.round((attendedDays / 20) * 100);
+    const el = (id) => document.getElementById(id);
+    if (el('home-tasks-done')) el('home-tasks-done').innerText = completedTasks;
+    if (el('home-reports-approved')) el('home-reports-approved').innerText = approvedReports;
+    if (el('home-attendance-pct')) el('home-attendance-pct').innerText = `${attPct}%`;
   }
 
   function addStudentActivity(desc) {
@@ -1283,7 +2026,7 @@ function renderStudentDashboard(container) {
   }
 
   populateStudentTasks(); populateStudentProjects(); populateStudentResources();
-  populateStudentVideos(); populateStudentHistory(); populateStudentProfileData();
+  populateStudentVideos(); populateStudentHistory(); populateStudentHomeStats();
   updateStudentMetrics();
 }
 
@@ -1301,8 +2044,101 @@ function renderMentorDashboard(container) {
   const studentsOnly = getStudents();
 
   container.innerHTML = `
+<!-- TAB HOME: MENTOR PROFILE CARD (shown on login) -->
+<div id="mentor-home" class="dashboard-tab">
+  <div class="view-header">
+    <div class="view-title"><h1>Welcome back, ${mentor.fullName.split(' ')[0]}!</h1><p>Staff administrator account — Speedify Tech X.</p></div>
+    <div class="badge badge-approved" style="background:rgba(155,81,224,0.1);color:var(--accent-purple);border:1px solid rgba(155,81,224,0.2)"><i class="fa-solid fa-shield-halved"></i> Staff Access</div>
+  </div>
+  <div style="display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start;">
+    <!-- Profile card -->
+    <div class="glass-card" style="padding:32px;text-align:center;">
+      <div class="profile-avatar-large" style="margin:0 auto 16px;background:linear-gradient(135deg,#7c3aed,#a78bfa);">${mentor.fullName.charAt(0).toUpperCase()}</div>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:4px;">${mentor.fullName}</h2>
+      <p style="color:var(--text-muted);font-size:13px;margin-bottom:6px;">${mentor.designation || 'Lead Mentor'}</p>
+      <span class="badge badge-approved" style="font-size:11px;margin-bottom:20px;display:inline-flex;background:rgba(155,81,224,0.1);color:var(--accent-purple);border-color:rgba(155,81,224,0.3);"><i class="fa-solid fa-shield-halved"></i> Active Administrator</span>
+      <div style="border-top:1px solid var(--border-color);padding-top:20px;text-align:left;display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+          <i class="fa-solid fa-envelope" style="color:var(--accent-purple);width:16px;"></i>
+          <span style="color:var(--text-muted);">Email</span>
+          <strong style="margin-left:auto;text-align:right;max-width:180px;overflow:hidden;text-overflow:ellipsis;">${mentor.email || 'N/A'}</strong>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+          <i class="fa-solid fa-building" style="color:var(--accent-purple);width:16px;"></i>
+          <span style="color:var(--text-muted);">Department</span>
+          <strong style="margin-left:auto;">${mentor.department || 'Management'}</strong>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+          <i class="fa-solid fa-id-badge" style="color:var(--accent-purple);width:16px;"></i>
+          <span style="color:var(--text-muted);">Role</span>
+          <strong style="margin-left:auto;">Staff / Mentor</strong>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+          <i class="fa-solid fa-calendar" style="color:var(--accent-purple);width:16px;"></i>
+          <span style="color:var(--text-muted);">Member Since</span>
+          <strong style="margin-left:auto;">${mentor.joinedDate || 'N/A'}</strong>
+        </div>
+      </div>
+    </div>
+    <!-- Domains + quick stats -->
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <!-- Domains offered -->
+      <div class="glass-card" style="padding:28px;">
+        <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:20px;"><i class="fa-solid fa-layer-group" style="color:var(--accent-purple);margin-right:8px;"></i>Internship Domains Offered</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
+          <div style="background:rgba(0,242,254,0.08);border:1px solid rgba(0,242,254,0.2);border-radius:12px;padding:16px;text-align:center;">
+            <i class="fa-solid fa-globe" style="font-size:22px;color:#00f2fe;margin-bottom:8px;display:block;"></i>
+            <p style="font-size:13px;font-weight:700;">Web Development</p>
+            <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">HTML, CSS, JS, React</p>
+          </div>
+          <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:16px;text-align:center;">
+            <i class="fa-solid fa-mobile-screen" style="font-size:22px;color:#3b82f6;margin-bottom:8px;display:block;"></i>
+            <p style="font-size:13px;font-weight:700;">App Development</p>
+            <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">Flutter, React Native</p>
+          </div>
+          <div style="background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.2);border-radius:12px;padding:16px;text-align:center;">
+            <i class="fa-solid fa-palette" style="font-size:22px;color:#ec4899;margin-bottom:8px;display:block;"></i>
+            <p style="font-size:13px;font-weight:700;">UI/UX Design</p>
+            <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">Figma, Adobe XD</p>
+          </div>
+          <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.25);border-radius:12px;padding:16px;text-align:center;">
+            <i class="fa-solid fa-layer-group" style="font-size:22px;color:#a78bfa;margin-bottom:8px;display:block;"></i>
+            <p style="font-size:13px;font-weight:700;">Full Stack Dev</p>
+            <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">React, Node.js, DBs</p>
+          </div>
+        </div>
+      </div>
+      <!-- Quick metrics -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+        <div class="glass-card" style="padding:20px;text-align:center;">
+          <div style="font-size:28px;font-weight:900;color:var(--accent-cyan);">${getStudents().length}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Total Interns</div>
+        </div>
+        <div class="glass-card" style="padding:20px;text-align:center;">
+          <div style="font-size:28px;font-weight:900;color:var(--warning);">${appState.reports.filter(r=>r.status==='pending').length}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Pending Reports</div>
+        </div>
+        <div class="glass-card" style="padding:20px;text-align:center;">
+          <div style="font-size:28px;font-weight:900;color:var(--success);">${appState.applications.length}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Applications</div>
+        </div>
+      </div>
+      <!-- Program info -->
+      <div class="glass-card" style="padding:24px;">
+        <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:16px;"><i class="fa-solid fa-circle-info" style="color:var(--accent-purple);margin-right:8px;"></i>Program Info</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-color);"><span style="color:var(--text-muted);">Organization</span><strong>Speedify Tech X</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-color);"><span style="color:var(--text-muted);">Registration</span><strong style="color:var(--success);">MSME Registered</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-color);"><span style="color:var(--text-muted);">Support Email</span><a href="mailto:speedifytechx@gmail.com" style="color:var(--accent-cyan);">speedifytechx@gmail.com</a></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="color:var(--text-muted);">Phone</span><a href="tel:+918610535231" style="color:var(--accent-cyan);">+91 8610535231</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- TAB 1: ANALYTICS -->
-<div id="mentor-analytics" class="dashboard-tab">
+<div id="mentor-analytics" class="dashboard-tab" style="display:none;">
   <div class="view-header">
     <div class="view-title"><h1>Administrative Board</h1><p>Welcome back, ${mentor.fullName}! Review program statistics.</p></div>
     <div class="badge badge-approved" style="background:rgba(155,81,224,0.1);color:var(--accent-purple);border:1px solid rgba(155,81,224,0.2)"><i class="fa-solid fa-shield-halved"></i> Staff Access</div>
@@ -1354,8 +2190,8 @@ function renderMentorDashboard(container) {
         <div class="form-group"><label class="form-label">Resource Title</label><input class="form-control" type="text" id="res-title-input" placeholder="e.g. Week 3 REST Api Webinar" required style="padding-left:16px;"></div>
         <div class="form-group"><label class="form-label">Resource Type</label><select class="form-control" id="res-type-input" required style="padding-left:16px;background-image:none;"><option value="video">Recorded Video Lecture</option><option value="doc">Instruction Manual / PDF</option><option value="link">Web Resource Link</option></select></div>
         <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" id="res-desc-input" placeholder="Write instructions for the cohort..." required style="padding-left:16px;min-height:80px;"></textarea></div>
-        <div class="form-group"><label class="form-label">Resource Link URL (Optional)</label><input class="form-control" type="url" id="res-link-input" placeholder="https://docs.google.com/..." style="padding-left:16px;"></div>
-        <div class="form-group" id="res-video-upload-group"><label class="form-label">Upload Video File</label>
+        <div class="form-group"><label class="form-label">Resource Link URL <span style="color:var(--text-muted);font-size:11px;">(YouTube, Google Drive, or any link)</span></label><input class="form-control" type="url" id="res-link-input" placeholder="https://youtube.com/watch?v=... or https://docs.google.com/..." style="padding-left:16px;"></div>
+        <div class="form-group" id="res-video-upload-group"><label class="form-label">Upload Video File <span style="color:var(--text-muted);font-size:11px;">(Optional if link provided above)</span></label>
           <div class="file-upload-box" id="res-video-upload-box" style="padding:15px;"><input type="file" id="res-video-file" accept="video/*"><div class="file-upload-content" id="res-video-box-content"><i class="fa-regular fa-file-video"></i><span>Select mp4, webm file</span></div><div class="file-preview-name" id="res-video-file-name" style="margin-top:4px;color:var(--accent-cyan);"></div></div>
         </div>
         <button class="btn btn-primary btn-full" type="submit"><span>Post Resource</span><i class="fa-solid fa-paper-plane"></i></button>
@@ -1393,7 +2229,7 @@ function renderMentorDashboard(container) {
   <div class="view-header"><div class="view-title"><h1>Internship Directory</h1><p>Track cohort enrollment lists and performance statistics.</p></div></div>
   <div class="glass-card">
     <div class="table-filters"><div class="search-input-wrapper"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="students-search" placeholder="Search interns by name..."></div></div>
-    <div class="table-responsive"><table class="custom-table"><thead><tr><th>Name</th><th>Username</th><th>Cohort</th><th>Attendance Rate</th><th>Tasks Finished</th><th>Progress Bar</th><th>Performance Grade</th></tr></thead><tbody id="mentor-students-tbody"></tbody></table></div>
+    <div class="table-responsive"><table class="custom-table"><thead><tr><th>Name</th><th>Username</th><th>Cohort</th><th>Attendance Rate</th><th>Tasks Finished</th><th>Progress Bar</th><th>Performance Grade</th><th>Action</th></tr></thead><tbody id="mentor-students-tbody"></tbody></table></div>
   </div>
 </div>
 <!-- TAB 8: APPLICATIONS SPREADSHEET -->
@@ -1431,30 +2267,8 @@ function renderMentorDashboard(container) {
     </div>
   </div>
 </div>
-<!-- TAB 10: MENTOR PROFILE -->
-<div id="mentor-profile" class="dashboard-tab" style="display:none;">
-  <div class="view-header"><div class="view-title"><h1>My Profile</h1><p>Staff administrator account details.</p></div></div>
-  <div class="profile-container">
-    <div class="glass-card profile-sidebar">
-      <div class="profile-avatar-large" id="mp-avatar">M</div>
-      <h2 id="mp-name">Mentor Name</h2>
-      <p id="mp-role-txt" style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Lead Program Director</p>
-      <div style="border-top:1px solid var(--border-color);padding-top:16px;margin-top:4px;text-align:left;font-size:13px;">
-        <p style="margin-bottom:8px;"><strong style="color:var(--text-secondary);">Department:</strong> <span id="mp-sidebar-dept">...</span></p>
-        <p><strong style="color:var(--text-secondary);">Member Since:</strong> <span id="mp-sidebar-joined">...</span></p>
-      </div>
-    </div>
-    <div class="glass-card profile-detail-card">
-      <h3 style="font-size:16px;font-weight:600;margin-bottom:20px;border-bottom:1px solid var(--border-color);padding-bottom:10px;">Staff Details</h3>
-      <div class="profile-info-grid">
-        <div class="profile-info-item"><h4>Email Address</h4><p id="mp-detail-email">...</p></div>
-        <div class="profile-info-item"><h4>Designation</h4><p id="mp-detail-desig">...</p></div>
-        <div class="profile-info-item"><h4>Role</h4><p>Staff / Mentor</p></div>
-        <div class="profile-info-item"><h4>Account Status</h4><p><span class="badge badge-approved">Active Administrator</span></p></div>
-      </div>
-    </div>
-  </div>
-</div>`;
+<!-- TAB 10: (profile removed — shown on login home tab) -->
+`;
 
   // --- MENTOR LOGIC WIRE-UP ---
   const taskAssigneeSelect = document.getElementById('task-assignee');
@@ -1492,6 +2306,22 @@ function renderMentorDashboard(container) {
     }).join('');
   }
 
+  // Play progress video uploaded by student in a daily report
+  window.playStudentReportVideo = function(reportId) {
+    const report = appState.reports.find(r => r.id === reportId);
+    if (!report) return;
+    let videoUrl = report.videoUrl || '';
+    if (videoUrl.startsWith('__rep_session:')) {
+      const sessionKey = videoUrl.replace('__rep_session:', '');
+      videoUrl = sessionStorage.getItem(sessionKey) || '';
+    }
+    if (!videoUrl) {
+      showModal('Progress Video', '<p style="padding:24px;text-align:center;color:var(--text-muted);">Video not available — session has expired or no video was attached to this report.</p>');
+      return;
+    }
+    showModal('Progress Video \u2014 ' + report.date, '<div class="modal-media-wrapper"><video src="' + videoUrl + '" controls autoplay style="width:100%;max-height:400px;"></video></div><p style="font-size:13px;color:var(--text-secondary);margin-top:12px;"><strong>Report Summary:</strong> ' + report.summary + '</p><p style="font-size:12px;color:var(--text-muted);margin-top:6px;"><i class="fa-regular fa-calendar" style="margin-right:4px;"></i>' + report.date + ' &nbsp;&middot;&nbsp; ' + report.hoursWorked + ' hrs &nbsp;&middot;&nbsp; <span class="badge badge-' + report.status + '" style="font-size:10px;">' + report.status + '</span></p>');
+  };
+
   window.deleteTask = function(taskId) {
     if (confirm("Are you sure you want to delete this task?")) {
       appState.tasks = appState.tasks.filter(t => t.id !== taskId); saveState();
@@ -1505,7 +2335,7 @@ function renderMentorDashboard(container) {
     if (!tbody) return;
     const searchQuery = document.getElementById('students-search').value.toLowerCase();
     const filtered = getStudents().filter(s => s.fullName.toLowerCase().includes(searchQuery));
-    if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">No matching interns found.</td></tr>`; return; }
+    if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px;">No matching interns found.</td></tr>`; return; }
     tbody.innerHTML = filtered.map(s => {
       const sTasks = appState.tasks.filter(t => t.assignedTo === s.id);
       const sAtt = appState.attendance.filter(a => a.userId === s.id);
@@ -1517,10 +2347,154 @@ function renderMentorDashboard(container) {
       const ratio = (completionPct + attendanceRatePct) / 2;
       const grade = ratio >= 90 ? 'Elite (A+)' : ratio >= 75 ? 'Strong (B)' : ratio >= 50 ? 'Satisfactory (C)' : 'Needs Improvement (D)';
       const gradeColor = grade.startsWith('Elite') ? 'var(--accent-cyan)' : grade.startsWith('Strong') ? 'var(--success)' : 'var(--warning)';
-      return `<tr><td><strong>${s.fullName}</strong></td><td><code>${s.username}</code></td><td>${s.cohort || 'N/A'}</td><td><strong>${attendanceRatePct}%</strong> <span style="font-size:11px;color:var(--text-muted);">(${attendedDays}/20 days)</span></td><td>${completedCount}/${totalTasks} tasks</td><td><div class="student-progress-bar-container"><div class="student-progress-bar" style="width:${completionPct}%"></div></div><div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${completionPct}% Completed</div></td><td><span style="font-weight:700;color:${gradeColor}">${grade}</span></td></tr>`;
+      return `<tr>
+        <td><strong style="cursor:pointer;color:var(--accent-cyan);" onclick="openStudentProfile('${s.id}')">${s.fullName}</strong></td>
+        <td><code>${s.username}</code></td>
+        <td>${s.cohort || 'N/A'}</td>
+        <td><strong>${attendanceRatePct}%</strong> <span style="font-size:11px;color:var(--text-muted);">(${attendedDays}/20 days)</span></td>
+        <td>${completedCount}/${totalTasks} tasks</td>
+        <td><div class="student-progress-bar-container"><div class="student-progress-bar" style="width:${completionPct}%"></div></div><div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${completionPct}% Completed</div></td>
+        <td><span style="font-weight:700;color:${gradeColor}">${grade}</span></td>
+        <td><button class="btn btn-secondary" style="padding:6px 14px;font-size:12px;" onclick="openStudentProfile('${s.id}')"><i class="fa-solid fa-eye"></i> View</button></td>
+      </tr>`;
     }).join('');
   }
   document.getElementById('students-search').addEventListener('input', populateMentorStudents);
+
+  // ── Open full student profile in modal ──────────────────────────────────────
+  window.openStudentProfile = function(studentId) {
+    const s = appState.users.find(u => u.id === studentId);
+    if (!s) return;
+
+    const sReports   = appState.reports.filter(r => r.userId === studentId);
+    const sTasks     = appState.tasks.filter(t => t.assignedTo === studentId);
+    const sProjects  = appState.projects.filter(p => p.userId === studentId);
+    const sAtt       = appState.attendance.filter(a => a.userId === studentId);
+    const sPayments  = appState.payments.filter(p => p.userId === studentId);
+
+    const completedTasks   = sTasks.filter(t => t.status === 'completed').length;
+    const approvedReports  = sReports.filter(r => r.status === 'approved').length;
+    const totalHours       = sReports.filter(r => r.status === 'approved').reduce((sum, r) => sum + (r.hoursWorked || 0), 0);
+    const attendedDays     = sAtt.filter(a => a.status === 'present' || a.status === 'late').length;
+    const attendancePct    = Math.round((attendedDays / 20) * 100);
+    const totalPaid        = sPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+    const initials         = s.fullName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+
+    const attRows = sAtt.length
+      ? sAtt.map(a => `<tr><td><code>${a.date}</code></td><td>${a.clockIn || '--'}</td><td>${a.clockOut || '--'}</td><td><span class="badge badge-${a.status}">${a.status}</span></td></tr>`).join('')
+      : `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:10px;">No attendance records</td></tr>`;
+
+    const taskRows = sTasks.length
+      ? sTasks.map(t => `<tr><td>${t.title}</td><td>${t.dueDate}</td><td><span class="badge badge-${t.status === 'completed' ? 'approved' : 'pending'}">${t.status}</span></td></tr>`).join('')
+      : `<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:10px;">No tasks assigned</td></tr>`;
+
+    const reportRows = sReports.length
+      ? sReports.map(r => {
+          const hasVideo = r.videoName && r.videoUrl;
+          return `<tr><td><code>${r.date}</code></td><td style="max-width:220px;white-space:normal;font-size:12px;">${r.summary.slice(0, 80)}…</td><td>${r.hoursWorked} hrs</td><td><span class="badge badge-${r.status}">${r.status}</span></td>${hasVideo ? `<td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="playStudentReportVideo('${r.id}')"><i class="fa-solid fa-play" style="color:var(--accent-cyan);"></i> Video</button></td>` : '<td><span style="color:var(--text-muted);font-size:11px;">—</span></td>'}</tr>`;
+        }).join('')
+      : `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:10px;">No reports submitted</td></tr>`;
+
+    const projectRows = sProjects.length
+      ? sProjects.map(p => `<tr><td>${p.title}</td><td><a href="${p.repoUrl}" target="_blank" style="color:var(--accent-cyan);font-size:12px;">Repo ↗</a></td><td><span class="badge badge-${p.status}">${p.status}</span></td></tr>`).join('')
+      : `<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:10px;">No projects submitted</td></tr>`;
+
+    const payRows = sPayments.length
+      ? sPayments.map(p => `<tr><td><code>${p.date}</code></td><td style="font-size:12px;">${p.description}</td><td style="color:var(--success);font-weight:700;">₹${p.amount}</td></tr>`).join('')
+      : `<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:10px;">No payments recorded</td></tr>`;
+
+    const ratio = (Math.round((sTasks.length > 0 ? (completedTasks / sTasks.length) * 100 : 0)) + attendancePct) / 2;
+    const grade = ratio >= 90 ? 'Elite (A+)' : ratio >= 75 ? 'Strong (B)' : ratio >= 50 ? 'Satisfactory (C)' : 'Needs Improvement (D)';
+    const gradeColor = grade.startsWith('Elite') ? 'var(--accent-cyan)' : grade.startsWith('Strong') ? 'var(--success)' : 'var(--warning)';
+
+    const html = `
+      <!-- Profile Header -->
+      <div style="display:flex;align-items:center;gap:18px;margin-bottom:24px;flex-wrap:wrap;">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--accent-gradient);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 4px 16px rgba(0,242,254,0.3);">${initials}</div>
+        <div style="flex:1;">
+          <h2 style="font-size:20px;font-weight:700;margin-bottom:4px;">${s.fullName}</h2>
+          <p style="color:var(--text-muted);font-size:13px;margin-bottom:6px;">${s.cohort || 'No cohort assigned'} &nbsp;·&nbsp; ${s.university || 'N/A'}</p>
+          <span style="font-weight:700;color:${gradeColor};font-size:13px;">Performance: ${grade}</span>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Joined</div>
+          <div style="font-size:13px;font-weight:600;">${s.joinedDate || 'N/A'}</div>
+        </div>
+      </div>
+
+      <!-- Info Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px;">
+        <div class="glass-card" style="padding:14px;text-align:center;">
+          <div style="font-size:22px;font-weight:800;color:var(--accent-cyan);">${attendancePct}%</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Attendance</div>
+        </div>
+        <div class="glass-card" style="padding:14px;text-align:center;">
+          <div style="font-size:22px;font-weight:800;color:var(--success);">${totalHours}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Approved Hrs</div>
+        </div>
+        <div class="glass-card" style="padding:14px;text-align:center;">
+          <div style="font-size:22px;font-weight:800;color:var(--accent-purple);">${completedTasks}/${sTasks.length}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Tasks Done</div>
+        </div>
+        <div class="glass-card" style="padding:14px;text-align:center;">
+          <div style="font-size:22px;font-weight:800;color:var(--warning);">₹${totalPaid}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Total Paid</div>
+        </div>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="glass-card" style="padding:16px;margin-bottom:20px;">
+        <h4 style="font-size:13px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Contact Details</h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:13px;">
+          <div><span style="color:var(--text-muted);">Email:</span> <strong>${s.email || 'N/A'}</strong></div>
+          <div><span style="color:var(--text-muted);">Phone:</span> <strong>${s.phone || 'N/A'}</strong></div>
+          <div><span style="color:var(--text-muted);">Username:</span> <code>${s.username}</code></div>
+          <div><span style="color:var(--text-muted);">Hourly Rate:</span> <strong style="color:var(--success);">₹${s.hourlyRate || 'N/A'}/hr</strong></div>
+        </div>
+      </div>
+
+      <!-- Attendance -->
+      <div class="glass-card" style="padding:16px;margin-bottom:20px;">
+        <h4 style="font-size:13px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;"><i class="fa-solid fa-clock" style="color:var(--accent-cyan);margin-right:6px;"></i>Attendance Log</h4>
+        <div class="table-responsive"><table class="custom-table"><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Status</th></tr></thead><tbody>${attRows}</tbody></table></div>
+      </div>
+
+      <!-- Tasks -->
+      <div class="glass-card" style="padding:16px;margin-bottom:20px;">
+        <h4 style="font-size:13px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;"><i class="fa-solid fa-list-check" style="color:var(--accent-purple);margin-right:6px;"></i>Assigned Tasks</h4>
+        <div class="table-responsive"><table class="custom-table"><thead><tr><th>Task</th><th>Due Date</th><th>Status</th></tr></thead><tbody>${taskRows}</tbody></table></div>
+      </div>
+
+      <!-- Reports -->
+      <div class="glass-card" style="padding:16px;margin-bottom:20px;">
+        <h4 style="font-size:13px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;"><i class="fa-solid fa-file-pen" style="color:var(--warning);margin-right:6px;"></i>Work Reports (${approvedReports} approved)</h4>
+        <div class="table-responsive"><table class="custom-table"><thead><tr><th>Date</th><th>Summary</th><th>Hours</th><th>Status</th><th>Progress Video</th></tr></thead><tbody>${reportRows}</tbody></table></div>
+      </div>
+
+      <!-- Projects -->
+      <div class="glass-card" style="padding:16px;margin-bottom:20px;">
+        <h4 style="font-size:13px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;"><i class="fa-solid fa-code-branch" style="color:var(--success);margin-right:6px;"></i>Projects Submitted</h4>
+        <div class="table-responsive"><table class="custom-table"><thead><tr><th>Title</th><th>Repo</th><th>Status</th></tr></thead><tbody>${projectRows}</tbody></table></div>
+      </div>
+
+      <!-- Payments -->
+      <div class="glass-card" style="padding:16px;margin-bottom:8px;">
+        <h4 style="font-size:13px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;"><i class="fa-solid fa-wallet" style="color:var(--success);margin-right:6px;"></i>Payment History</h4>
+        <div class="table-responsive"><table class="custom-table"><thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead><tbody>${payRows}</tbody></table></div>
+      </div>
+
+      <!-- Quick action -->
+      <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="switchTab('mentor-tracker');document.getElementById('tracker-student-selector').value='${studentId}';populateMentorWorkTrackerDataGlobal('${studentId}');document.getElementById('modal-container').classList.remove('active');">
+          <i class="fa-solid fa-clock-rotate-left"></i> Open in Work Tracker
+        </button>
+        <button class="btn btn-secondary" onclick="document.getElementById('modal-container').classList.remove('active');">
+          <i class="fa-solid fa-xmark"></i> Close
+        </button>
+      </div>`;
+
+    showModal(`Intern Profile — ${s.fullName}`, html);
+  };
 
   function populateMentorWorkTrackerData(studentId) {
     const sUser = appState.users.find(u => u.id === studentId);
@@ -1549,6 +2523,8 @@ function renderMentorDashboard(container) {
       }).join('');
   }
   if (getStudents().length > 0 && trackerStudentSelector) populateMentorWorkTrackerData(getStudents()[0].id);
+  // Expose so the student profile modal "Open in Work Tracker" button can call it
+  window.populateMentorWorkTrackerDataGlobal = populateMentorWorkTrackerData;
 
   // Resource board
   const resTypeSelect = document.getElementById('res-type-input');
@@ -1783,12 +2759,7 @@ function renderMentorDashboard(container) {
   });
 
   function populateMentorProfileData() {
-    document.getElementById('mp-avatar').innerText = mentor.fullName.charAt(0).toUpperCase();
-    document.getElementById('mp-name').innerText = mentor.fullName;
-    document.getElementById('mp-sidebar-dept').innerText = mentor.department || 'Management';
-    document.getElementById('mp-sidebar-joined').innerText = mentor.joinedDate || 'N/A';
-    document.getElementById('mp-detail-email').innerText = mentor.email || 'N/A';
-    document.getElementById('mp-detail-desig').innerText = mentor.designation || 'Lead Mentor';
+    // Profile is rendered inline in the mentor-home tab HTML — nothing to wire up
   }
 
   function updateMentorMetrics() {
