@@ -99,8 +99,10 @@ section, .navbar, .footer, .msme-wrap { width: 100%; }
 
 /* ── DOMAINS ──────────────────────────────────────────── */
 .domains-section { padding: 60px 0; }
-.domains-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-.domain-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 20px; transition: all 0.2s; cursor: default; }
+.domains-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+/* ── DOMAIN CARDS ─ full-width stretch ────────────────── */
+.domain-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 20px; transition: all 0.2s; cursor: default; width: 100%; }
 .domain-card:hover { border-color: rgba(139,92,246,0.4); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(124,58,237,0.15); }
 .domain-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
 .domain-icon.cyan   { background: rgba(0,242,254,0.1);   color: #00f2fe; }
@@ -178,6 +180,7 @@ section, .navbar, .footer, .msme-wrap { width: 100%; }
   .hero-cta-row { justify-content: center; }
   .hero-right { min-height: 280px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .domains-grid { grid-template-columns: repeat(2, 1fr); }
   .why-grid { grid-template-columns: 1fr; }
   .footer-main { grid-template-columns: 1fr 1fr; gap: 32px; padding-top: 40px; padding-bottom: 32px; }
   .footer-brand-col { grid-column: 1 / -1; }
@@ -186,11 +189,12 @@ section, .navbar, .footer, .msme-wrap { width: 100%; }
 @media (max-width: 640px) {
   :root { --px: 20px; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
+  .domains-grid { grid-template-columns: 1fr 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
   .msme-bar { flex-direction: column; text-align: center; }
   .footer-main { grid-template-columns: 1fr; padding-top: 32px; padding-bottom: 24px; }
   .footer-brand-col { grid-column: auto; }
-  .footer-bottom { flex-direction: column; text-align: center; }
+  .footer-bottom { flex-direction: column; text-align: center; justify-content: center; }
 }
 
 /* ── MOBILE NAV HAMBURGER ─────────────────────────────── */
@@ -255,12 +259,13 @@ section, .navbar, .footer, .msme-wrap { width: 100%; }
   .stat-card { padding: 20px 16px; }
   .stat-num { font-size: 32px; }
 
-  /* Domains */
+  /* Domains — 2 columns on small phones */
   .domains-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
   .domain-card { padding: 20px 14px; }
 
   /* Why grid: 1 col */
   .why-grid { grid-template-columns: 1fr; }
+  .why-card { width: 100%; }
 
   /* CTA */
   .cta-card { padding: 40px 20px; }
@@ -268,11 +273,12 @@ section, .navbar, .footer, .msme-wrap { width: 100%; }
 
   /* Contact */
   .contact-grid { grid-template-columns: 1fr; }
+  .contact-card { width: 100%; }
 
   /* Footer */
   .footer-main { grid-template-columns: 1fr; gap: 24px; padding-top: 28px; padding-bottom: 20px; }
   .footer-brand-col { grid-column: auto; }
-  .footer-bottom { flex-direction: column; text-align: center; }
+  .footer-bottom { flex-direction: column; text-align: center; justify-content: center; }
 
   /* Scroll top */
   .scroll-top { bottom: 16px; right: 16px; width: 40px; height: 40px; font-size: 14px; }
