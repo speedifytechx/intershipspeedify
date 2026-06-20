@@ -294,7 +294,6 @@ function renderHomeView(container) {
           <span><i class="fa-solid fa-circle-check"></i> Mentorship</span>
           <span><i class="fa-solid fa-circle-check"></i> Certification</span>
         </div>
-        <div class="home-rating"><span class="home-stars">★★★★★</span> <strong>4.9/5</strong> from 500+ students</div>
       </div>
       <div class="home-hero-right">
         <div class="home-logo-ring">
@@ -330,13 +329,10 @@ function renderHomeView(container) {
     <section class="home-section" id="domains-sec">
       <div class="home-section-header"><h2>Explore <span class="home-accent">Domains</span></h2><p>Master the skills that matter. Choose a path and become an expert.</p></div>
       <div class="home-domains">
-        <div class="home-domain-card"><div class="hd-icon cyan"><i class="fa-solid fa-code"></i></div><h3>Web Development</h3><p>HTML, CSS, JavaScript, React, Node.js</p></div>
+        <div class="home-domain-card"><div class="hd-icon cyan"><i class="fa-solid fa-globe"></i></div><h3>Web Development</h3><p>HTML, CSS, JavaScript, React, Node.js</p></div>
+        <div class="home-domain-card"><div class="hd-icon blue"><i class="fa-solid fa-mobile-screen"></i></div><h3>App Development</h3><p>Flutter, React Native, Android, iOS</p></div>
         <div class="home-domain-card"><div class="hd-icon purple"><i class="fa-solid fa-layer-group"></i></div><h3>Full Stack Development</h3><p>React, Node.js, Databases, REST APIs</p></div>
-        <div class="home-domain-card"><div class="hd-icon red"><i class="fa-solid fa-robot"></i></div><h3>AI & Machine Learning</h3><p>Neural Networks, Deep Learning, Python</p></div>
-        <div class="home-domain-card"><div class="hd-icon green"><i class="fa-solid fa-shield-halved"></i></div><h3>Cyber Security</h3><p>Ethical Hacking, Network Security, VAPT</p></div>
-        <div class="home-domain-card"><div class="hd-icon pink"><i class="fa-solid fa-gamepad"></i></div><h3>Game Development</h3><p>Unity, Unreal, Game Design, C#</p></div>
-        <div class="home-domain-card"><div class="hd-icon blue"><i class="fa-solid fa-palette"></i></div><h3>UI/UX Design</h3><p>Figma, Adobe XD, Wireframing</p></div>
-        <div class="home-domain-card"><div class="hd-icon cyan"><i class="fa-solid fa-mobile-screen"></i></div><h3>Mobile Development</h3><p>Flutter, React Native, Android, iOS</p></div>
+        <div class="home-domain-card"><div class="hd-icon pink"><i class="fa-solid fa-palette"></i></div><h3>UI/UX Design</h3><p>Figma, Adobe XD, Wireframing</p></div>
       </div>
     </section>
 
@@ -372,6 +368,11 @@ function renderHomeView(container) {
           <div class="hc-icon"><i class="fa-solid fa-phone"></i></div>
           <h3>Call Us</h3><p>Mon-Fri from 9am to 6pm</p>
           <a href="tel:+918610535231" class="hc-link">+91 8610535231</a>
+        </div>
+        <div class="home-contact-card hc-insta-card">
+          <div class="hc-icon hc-insta-icon"><i class="fa-brands fa-instagram"></i></div>
+          <h3>Instagram</h3><p>Follow us for updates</p>
+          <a href="https://www.instagram.com/speedifytechx?igsh=OW5lcGgxejd1MXJq" target="_blank" rel="noopener noreferrer" class="hc-link hc-insta-link">@speedifytechx</a>
         </div>
       </div>
       <div class="hc-msme-wrap">
@@ -409,7 +410,10 @@ function renderHomeView(container) {
             </a>
           </div>
           <div class="hf-footer-socials">
-            <a href="https://www.instagram.com/speedifytechx?igsh=OW5lcGgxejd1MXJq" target="_blank" rel="noopener noreferrer" class="hf-footer-social-btn hf-footer-fade-in" style="animation-delay:0.4s" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.instagram.com/speedifytechx?igsh=OW5lcGgxejd1MXJq" target="_blank" rel="noopener noreferrer" class="hf-footer-social-link hf-footer-fade-in" style="animation-delay:0.4s" aria-label="Instagram">
+              <span class="hf-footer-social-btn"><i class="fa-brands fa-instagram"></i></span>
+              <span>@speedifytechx</span>
+            </a>
           </div>
         </div>
         <div class="hf-footer-links-col">
@@ -432,7 +436,6 @@ function renderHomeView(container) {
       </div>
       <div class="hf-footer-bottom">
         <p>© 2026 Speedify Tech X. All rights reserved.</p>
-        <p class="hf-footer-made-with">Made with <i class="fa-solid fa-heart hf-footer-heart"></i> for students</p>
       </div>
     </footer>
 
@@ -445,7 +448,7 @@ function renderHomeView(container) {
     const ctx = canvas.getContext('2d');
     let W = canvas.width = window.innerWidth;
     let H = canvas.height = window.innerHeight;
-    const COLORS = ['rgba(139,92,246,', 'rgba(0,242,254,', 'rgba(167,139,250,'];
+    const COLORS = ['rgba(30,115,230,', 'rgba(56,189,248,', 'rgba(96,165,250,'];
     const particles = Array.from({ length: 70 }, () => ({
       x: Math.random() * W,
       y: Math.random() * H,
@@ -475,7 +478,7 @@ function renderHomeView(container) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = 'rgba(139,92,246,' + (0.12 * (1 - dist / 120)) + ')';
+            ctx.strokeStyle = 'rgba(30,115,230,' + (0.15 * (1 - dist / 120)) + ')';
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
