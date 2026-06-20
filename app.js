@@ -3,7 +3,7 @@
 // --- STATE MANAGEMENT ---
 const DEFAULT_STATE = {
   users: [
-    { id: "usr_1", username: "mentor", password: "password123", fullName: "Dr. Sarah Jenkins", role: "mentor", email: "sarah.j@speedify.com", department: "Engineering", designation: "Lead Mentor", joinedDate: "2025-01-10" },
+    { id: "usr_1", username: "speedifytechx", password: "MNNPS2772007", fullName: "Dr. Sarah Jenkins", role: "mentor", email: "speedifytechx@gmail.com", department: "Engineering", designation: "Lead Mentor", joinedDate: "2025-01-10" },
     { id: "usr_2", username: "student1", password: "password123", fullName: "Alex Mercer", role: "student", email: "alex.m@gmail.com", cohort: "Web Dev Cohort A", joinedDate: "2026-06-01", phone: "+1 (555) 019-2834", university: "Stanford University", hourlyRate: 20 },
     { id: "usr_3", username: "student2", password: "password123", fullName: "Elena Rostova", role: "student", email: "elena.r@outlook.com", cohort: "Mobile Dev Cohort B", joinedDate: "2026-06-01", phone: "+1 (555) 018-9201", university: "MIT", hourlyRate: 18 }
   ],
@@ -40,15 +40,39 @@ const DEFAULT_STATE = {
 };
 
 // State and Session Init
+const STATE_VERSION = "4";
 let appState = JSON.parse(localStorage.getItem('speedify_portal_state'));
 if (!appState) {
+  // First ever load — seed defaults
   appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
   localStorage.setItem('speedify_portal_state', JSON.stringify(appState));
+  localStorage.setItem('speedify_portal_version', STATE_VERSION);
+} else if (localStorage.getItem('speedify_portal_version') !== STATE_VERSION) {
+  // Version changed — only update the mentor credentials, keep all user data intact
+  const mentorIdx = appState.users.findIndex(u => u.role === 'mentor');
+  if (mentorIdx !== -1) {
+    appState.users[mentorIdx].username = DEFAULT_STATE.users[0].username;
+    appState.users[mentorIdx].password = DEFAULT_STATE.users[0].password;
+    appState.users[mentorIdx].email    = DEFAULT_STATE.users[0].email;
+  } else {
+    appState.users.unshift(JSON.parse(JSON.stringify(DEFAULT_STATE.users[0])));
+  }
+  localStorage.setItem('speedify_portal_state', JSON.stringify(appState));
+  localStorage.setItem('speedify_portal_version', STATE_VERSION);
 }
 let currentSession = JSON.parse(sessionStorage.getItem('speedify_portal_session')) || { currentUser: null };
 const sessionBlobs = {};
 
-function saveState() { localStorage.setItem('speedify_portal_state', JSON.stringify(appState)); }
+function saveState() {
+  try {
+    localStorage.setItem('speedify_portal_state', JSON.stringify(appState));
+  } catch(e) {
+    // localStorage quota exceeded — strip large video base64 data and retry
+    const stripped = JSON.parse(JSON.stringify(appState));
+    stripped.resources = stripped.resources.map(r => r.url && r.url.startsWith('data:video') ? {...r, url: r.linkUrl || ''} : r);
+    try { localStorage.setItem('speedify_portal_state', JSON.stringify(stripped)); appState = stripped; } catch(e2) { console.warn('Storage full, some data may not persist.'); }
+  }
+}
 function saveSession() { sessionStorage.setItem('speedify_portal_session', JSON.stringify(currentSession)); }
 
 // --- FIREBASE CONFIG ---
@@ -143,23 +167,38 @@ function navigateTo(hash) { window.location.hash = hash; }
 window.navigateTo = navigateTo;
 
 function handleRoute() {
-  const hash = window.location.hash || '#login';
+  const hash = window.location.hash || '#home';
   const viewContainer = document.getElementById('view-container');
   const sidebar = document.getElementById('sidebar');
   const mainContent = document.getElementById('main-content');
   if (!viewContainer) return;
+
+  // Cancel particle animation when leaving home
+  if (window._homeParticleAnim) { cancelAnimationFrame(window._homeParticleAnim); window._homeParticleAnim = null; }
+
+  // Public routes — no auth needed
+  if (hash === '#home') {
+    sidebar.classList.add('hidden');
+    mainContent.classList.add('full-width');
+    mainContent.classList.remove('shifted');
+    renderHomeView(viewContainer); return;
+  }
   if (hash === '#apply') {
     sidebar.classList.add('hidden'); mainContent.classList.add('full-width'); mainContent.classList.remove('shifted');
     renderApplyView(viewContainer); return;
   }
-  if (!currentSession.currentUser && hash !== '#login' && hash !== '#register') { navigateTo('#login'); return; }
+
+  // Auth gating
+  if (!currentSession.currentUser && hash !== '#login' && hash !== '#register') { navigateTo('#home'); return; }
   if (currentSession.currentUser && (hash === '#login' || hash === '#register')) { navigateTo('#dashboard'); return; }
+
   if (currentSession.currentUser) {
     sidebar.classList.remove('hidden'); mainContent.classList.remove('full-width'); mainContent.classList.add('shifted');
     updateSidebarUI();
   } else {
     sidebar.classList.add('hidden'); mainContent.classList.add('full-width'); mainContent.classList.remove('shifted');
   }
+
   if (hash === '#login') renderLoginView(viewContainer);
   else if (hash === '#register') renderRegisterView(viewContainer);
   else if (hash === '#dashboard') {
@@ -196,8 +235,7 @@ function updateSidebarUI() {
       <li><a class="nav-item" data-tab="student-report"><i class="fa-solid fa-file-pen"></i><span>Submit Report</span></a></li>
       <li><a class="nav-item" data-tab="student-project"><i class="fa-solid fa-code-branch"></i><span>Submit Project</span></a></li>
       <li><a class="nav-item" data-tab="student-tasks"><i class="fa-solid fa-tasks"></i><span>My Tasks</span></a></li>
-      <li><a class="nav-item" data-tab="student-resources"><i class="fa-solid fa-folder-open"></i><span>Resource Library</span></a></li>
-      <li><a class="nav-item" data-tab="student-earnings"><i class="fa-solid fa-sack-dollar"></i><span>My Earnings</span></a></li>
+      <li><a class="nav-item" data-tab="student-videos"><i class="fa-solid fa-play-circle"></i><span>Training Videos</span></a></li>
       <li><a class="nav-item" data-tab="student-history"><i class="fa-solid fa-history"></i><span>Work History</span></a></li>
       <li><a class="nav-item" data-tab="student-profile"><i class="fa-solid fa-circle-user"></i><span>My Profile</span></a></li>`;
   }
@@ -219,6 +257,12 @@ function switchTab(tabId) {
     else { tab.style.display = 'none'; tab.classList.remove('fade-in'); }
   });
   if (tabId === 'mentor-analytics') setTimeout(initAnalyticsCharts, 100);
+  // Refresh videos every time the tab is opened so new uploads appear immediately
+  if (tabId === 'student-videos') {
+    const fresh = localStorage.getItem('speedify_portal_state');
+    if (fresh) { try { appState = JSON.parse(fresh); } catch(e) {} }
+    if (typeof populateStudentVideosGlobal === 'function') populateStudentVideosGlobal();
+  }
 }
 
 // Log Out
@@ -229,12 +273,231 @@ document.getElementById('btn-logout').addEventListener('click', () => {
 
 // --- RENDERERS ---
 
+// 0. HOME / LANDING VIEW
+function renderHomeView(container) {
+  container.innerHTML = `
+  <div class="home-page">
+    <!-- Particle Canvas Background -->
+    <canvas id="home-particles-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+
+    <!-- NAVBAR -->
+    <nav class="home-nav">
+      <div class="home-nav-brand">
+        <img src="logo.jpeg" alt="Speedify Tech X" class="home-nav-logo">
+        <span>Speedify <span class="home-accent">Tech X</span></span>
+      </div>
+      <div class="home-nav-actions">
+        <a href="#login" onclick="navigateTo('#login')" class="home-btn-login">Login</a>
+        <a href="#apply" onclick="navigateTo('#apply')" class="home-btn-cta">Get Started <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="home-hero">
+      <div class="home-grid-bg"></div>
+      <div class="home-hero-left">
+        <div class="home-badge"><i class="fa-solid fa-rocket"></i> Shape your future with us</div>
+        <h1 class="home-title">Accelerate Your Career<br><span class="home-accent">with Speedify Tech X</span></h1>
+        <p class="home-desc">Step into the world of tech with our elite internship program. Gain real-world experience, build a stellar portfolio, and land your dream job.</p>
+        <div class="home-cta-row">
+          <a href="#apply" onclick="navigateTo('#apply')" class="home-btn-primary">Create Account <i class="fa-solid fa-arrow-right"></i></a>
+          <a href="#domains-sec" class="home-btn-secondary">Explore Domains</a>
+        </div>
+        <div class="home-trust">
+          <span><i class="fa-solid fa-circle-check"></i> Real Projects</span>
+          <span><i class="fa-solid fa-circle-check"></i> Mentorship</span>
+          <span><i class="fa-solid fa-circle-check"></i> Certification</span>
+        </div>
+        <div class="home-rating"><span class="home-stars">★★★★★</span> <strong>4.9/5</strong> from 500+ students</div>
+      </div>
+      <div class="home-hero-right">
+        <div class="home-logo-ring">
+          <div class="home-ring-anim"></div>
+          <div class="home-logo-card"><img src="logo.jpeg" alt="Speedify Tech X"></div>
+        </div>
+        <div class="home-float home-float-tl"><i class="fa-solid fa-code-merge"></i><div><strong>Code Merged</strong><span>Just now</span></div></div>
+        <div class="home-float home-float-br"><i class="fa-solid fa-certificate"></i><div><strong>Certified</strong><span>Top 1% Intern</span></div></div>
+        <div class="home-float home-float-bl"><i class="fa-solid fa-briefcase"></i><div><strong>Offer Received</strong><span>Tech Innovators Inc.</span></div></div>
+      </div>
+    </section>
+
+    <!-- MSME -->
+    <div class="home-msme">
+      <div class="home-msme-left">
+        <div class="home-msme-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div><strong>MSME Registered Company</strong><p>Certified by Ministry of Micro, Small & Medium Enterprises, Government of India</p></div>
+      </div>
+      <div class="home-msme-right">
+        <img src="msme.jpg" alt="MSME Certificate" class="home-msme-img">
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="home-stats">
+      <div class="home-stat"><span class="home-stat-num">500<sup>+</sup></span><span>Students Trained</span></div>
+      <div class="home-stat"><span class="home-stat-num">50<sup>+</sup></span><span>Partner Companies</span></div>
+      <div class="home-stat"><span class="home-stat-num">95<sup>%</sup></span><span>Placement Rate</span></div>
+      <div class="home-stat"><span class="home-stat-num">10<sup>+</sup></span><span>Tech Domains</span></div>
+    </div>
+
+    <!-- DOMAINS -->
+    <section class="home-section" id="domains-sec">
+      <div class="home-section-header"><h2>Explore <span class="home-accent">Domains</span></h2><p>Master the skills that matter. Choose a path and become an expert.</p></div>
+      <div class="home-domains">
+        <div class="home-domain-card"><div class="hd-icon cyan"><i class="fa-solid fa-code"></i></div><h3>Web Development</h3><p>HTML, CSS, JavaScript, React, Node.js</p></div>
+        <div class="home-domain-card"><div class="hd-icon purple"><i class="fa-solid fa-layer-group"></i></div><h3>Full Stack Development</h3><p>React, Node.js, Databases, REST APIs</p></div>
+        <div class="home-domain-card"><div class="hd-icon red"><i class="fa-solid fa-robot"></i></div><h3>AI & Machine Learning</h3><p>Neural Networks, Deep Learning, Python</p></div>
+        <div class="home-domain-card"><div class="hd-icon green"><i class="fa-solid fa-shield-halved"></i></div><h3>Cyber Security</h3><p>Ethical Hacking, Network Security, VAPT</p></div>
+        <div class="home-domain-card"><div class="hd-icon pink"><i class="fa-solid fa-gamepad"></i></div><h3>Game Development</h3><p>Unity, Unreal, Game Design, C#</p></div>
+        <div class="home-domain-card"><div class="hd-icon blue"><i class="fa-solid fa-palette"></i></div><h3>UI/UX Design</h3><p>Figma, Adobe XD, Wireframing</p></div>
+        <div class="home-domain-card"><div class="hd-icon cyan"><i class="fa-solid fa-mobile-screen"></i></div><h3>Mobile Development</h3><p>Flutter, React Native, Android, iOS</p></div>
+      </div>
+    </section>
+
+    <!-- WHY CHOOSE -->
+    <section class="home-section home-why-bg">
+      <div class="home-section-header"><h2>Why Choose <span class="home-accent">Speedify Tech X?</span></h2><p>We don't just teach. We prepare you for the real world.</p></div>
+      <div class="home-why">
+        <div class="home-why-card"><div class="hw-icon"><i class="fa-solid fa-diagram-project"></i></div><h3>Real-World Projects</h3><p>Work on actual client projects, solve real problems, and build a portfolio that stands out to recruiters.</p></div>
+        <div class="home-why-card"><div class="hw-icon"><i class="fa-solid fa-user-graduate"></i></div><h3>Expert Mentors</h3><p>Learn directly from industry veterans who have built scalable systems at top tech companies.</p></div>
+        <div class="home-why-card"><div class="hw-icon"><i class="fa-solid fa-award"></i></div><h3>Verified Certificate</h3><p>Earn a recognized certificate backed by partner organizations that recruiters actually value.</p></div>
+      </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="home-section">
+      <div class="home-cta-banner">
+        <h2>Ready to transform your career?</h2>
+        <p>Join thousands of students who have launched their careers with us.</p>
+        <a href="#apply" onclick="navigateTo('#apply')" class="home-btn-primary" style="display:inline-flex;margin-top:8px;">Start Your Application <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="home-section">
+      <div class="home-section-header"><h2>Get In <span class="home-accent">Touch</span></h2></div>
+      <div class="home-contact">
+        <div class="home-contact-card">
+          <div class="hc-icon"><i class="fa-solid fa-envelope"></i></div>
+          <h3>Email Us</h3><p>Drop us a line anytime</p>
+          <a href="mailto:speedifytechx@gmail.com" class="hc-link">speedifytechx@gmail.com</a>
+        </div>
+        <div class="home-contact-card">
+          <div class="hc-icon"><i class="fa-solid fa-phone"></i></div>
+          <h3>Call Us</h3><p>Mon-Fri from 9am to 6pm</p>
+          <a href="tel:+918610535231" class="hc-link">+91 8610535231</a>
+        </div>
+      </div>
+      <div class="hc-msme-wrap">
+        <div class="hc-msme-bar">
+          <div class="hc-msme-img-wrap"><img src="msme.jpg" alt="MSME Certificate" class="hc-msme-img"></div>
+          <div class="hc-msme-text">
+            <strong>MSME Registered</strong>
+            <span>Ministry of MSME, Govt. of India</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="hf-footer">
+      <div class="hf-footer-main">
+        <div class="hf-footer-brand-col">
+          <div class="hf-footer-brand">
+            <img src="logo.jpeg" alt="Speedify Tech X" class="hf-footer-logo">
+            <span class="hf-footer-brand-name">Speedify <span class="home-accent">Tech X</span></span>
+          </div>
+          <p class="hf-footer-brand-desc">Empowering the next generation of tech leaders through immersive, project-based internships.</p>
+          <div class="hf-footer-socials">
+            <a href="https://www.instagram.com/speedifytechx?igsh=OW5lcGgxejd1MXJq" target="_blank" class="hf-footer-social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+        <div class="hf-footer-links-col">
+          <h4 class="hf-footer-col-title">Quick Links</h4>
+          <ul class="hf-footer-link-list">
+            <li><a href="#home" onclick="navigateTo('#home')">Home</a></li>
+            <li><a href="#domains-sec">Domains</a></li>
+            <li><a href="#login" onclick="navigateTo('#login')">Portal Login</a></li>
+            <li><a href="#apply" onclick="navigateTo('#apply')">Apply Now</a></li>
+          </ul>
+        </div>
+        <div class="hf-footer-links-col">
+          <h4 class="hf-footer-col-title">Legal</h4>
+          <ul class="hf-footer-link-list">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Refund Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="hf-footer-bottom">
+        <p>© 2026 Speedify Tech X. All rights reserved.</p>
+        <p class="hf-footer-made-with">Made with <i class="fa-solid fa-heart hf-footer-heart"></i> for students</p>
+      </div>
+    </footer>
+
+  </div>`;
+
+  // Particle background animation
+  (function initParticles() {
+    const canvas = document.getElementById('home-particles-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    const COLORS = ['rgba(139,92,246,', 'rgba(0,242,254,', 'rgba(167,139,250,'];
+    const particles = Array.from({ length: 70 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 2 + 0.5,
+      dx: (Math.random() - 0.5) * 0.4,
+      dy: (Math.random() - 0.5) * 0.4,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: Math.random() * 0.5 + 0.1
+    }));
+    let animId;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color + p.alpha + ')';
+        ctx.fill();
+        p.x += p.dx; p.y += p.dy;
+        if (p.x < 0 || p.x > W) p.dx *= -1;
+        if (p.y < 0 || p.y > H) p.dy *= -1;
+      });
+      // Draw connecting lines
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = 'rgba(139,92,246,' + (0.12 * (1 - dist / 120)) + ')';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      animId = requestAnimationFrame(draw);
+    }
+    draw();
+    window._homeParticleAnim = animId;
+    window.addEventListener('resize', () => {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    });
+  })();
+}
+
 // 1. PUBLIC APPLY VIEW
 function renderApplyView(container) {
   container.innerHTML = `
   <div style="max-width:720px;margin:40px auto;padding:0 16px;">
     <div style="text-align:center;margin-bottom:32px;">
-      <img src="logo.jpg" alt="Speedify Logo" class="login-logo-img">
+      <img src="logo.jpeg" alt="Speedify Logo" class="login-logo-img">
       <h1 style="font-size:26px;font-weight:700;margin-bottom:6px;">Internship Application Form</h1>
       <p style="color:var(--text-secondary);font-size:14px;">Apply to the Speedify Tech X Internship Program.</p>
       <a href="#login" style="display:inline-block;margin-top:12px;font-size:13px;color:var(--accent-cyan);text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Portal Login</a>
@@ -249,22 +512,13 @@ function renderApplyView(container) {
           <div><label class="form-label">Phone Number</label><input class="form-control" type="tel" id="apply-phone" placeholder="+1 (555) 000-0000" required style="padding-left:16px;"></div>
           <div><label class="form-label">University / College</label><input class="form-control" type="text" id="apply-uni" placeholder="Stanford University" required style="padding-left:16px;"></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+        <div style="display:grid;grid-template-columns:1fr;gap:20px;margin-bottom:20px;">
           <div><label class="form-label">Preferred Internship Role</label>
             <select class="form-control" id="apply-role" required style="padding-left:16px;background-image:none;">
-              <option>Software Engineer Intern</option><option>Mobile App Developer Intern</option>
+              <option>Software Engineer Intern</option><option>Web Development Intern</option><option>Mobile App Developer Intern</option>
               <option>UI/UX Designer Intern</option><option>Data Analyst Intern</option>
             </select></div>
-          <div><label class="form-label">Target Cohort / Batch</label>
-            <select class="form-control" id="apply-cohort" required style="padding-left:16px;background-image:none;">
-              <option>Web Dev Cohort A</option><option>Mobile Dev Cohort B</option><option>Data Analytics Cohort C</option>
-            </select></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
-          <div><label class="form-label">Resume Link</label><input class="form-control" type="url" id="apply-resume" placeholder="https://drive.google.com/file/..." required style="padding-left:16px;"></div>
-          <div><label class="form-label">Portfolio / Github URL</label><input class="form-control" type="url" id="apply-portfolio" placeholder="https://github.com/username" style="padding-left:16px;"></div>
-        </div>
-        <div class="form-group"><label class="form-label">Brief Cover Letter</label><textarea class="form-control" id="apply-cover" placeholder="Tell us why you'd be a great fit..." required style="padding-left:16px;"></textarea></div>
         <button class="btn btn-primary btn-full" type="submit"><span>Submit Application</span><i class="fa-solid fa-paper-plane"></i></button>
       </form>
     </div>
@@ -282,10 +536,10 @@ function renderApplyView(container) {
       phone:           document.getElementById('apply-phone').value.trim(),
       role:            document.getElementById('apply-role').value,
       university:      document.getElementById('apply-uni').value.trim(),
-      preferredCohort: document.getElementById('apply-cohort').value,
-      resumeLink:      document.getElementById('apply-resume').value.trim(),
-      portfolioLink:   document.getElementById('apply-portfolio').value.trim() || 'N/A',
-      coverLetter:     document.getElementById('apply-cover').value.trim(),
+      preferredCohort: '',
+      resumeLink:      '',
+      portfolioLink:   '',
+      coverLetter:     '',
       status:    "Review",
       appliedAt: new Date().toISOString()
     };
@@ -321,7 +575,7 @@ function renderLoginView(container) {
   <div class="auth-wrapper">
     <div class="glass-card auth-card fade-in">
       <div class="auth-header">
-        <img src="logo.jpg" alt="Speedify Logo" class="login-logo-img">
+        <img src="logo.jpeg" alt="Speedify Logo" class="login-logo-img">
         <h2>Speedify Tech X</h2>
         <p>Internship Management Portal</p>
         <span class="badge ${isFirebaseActive ? 'badge-approved' : 'badge-pending'}" style="font-size:8px;margin-top:6px;">
@@ -351,6 +605,7 @@ function renderLoginView(container) {
       <div class="auth-footer">
         Don't have an account? <a href="#register">Register here</a>
         <div style="margin-top:12px;">Applying for Internship? <a href="#apply" style="color:var(--accent-purple);">Apply Now</a></div>
+        <div style="margin-top:8px;"><a href="landing.html" style="color:var(--text-muted);font-size:12px;"><i class="fa-solid fa-house"></i> Back to Home</a></div>
       </div>
     </div>
   </div>`;
@@ -359,13 +614,27 @@ function renderLoginView(container) {
     const emailVal    = document.getElementById('login-username').value.trim();
     const passwordVal = document.getElementById('login-password').value;
 
+    // Always check local users first (covers mentor and pre-seeded accounts)
+    const localUser = appState.users.find(u =>
+      (u.username.toLowerCase() === emailVal.toLowerCase() ||
+       u.email.toLowerCase()    === emailVal.toLowerCase()) &&
+      u.password === passwordVal
+    );
+    if (localUser) {
+      currentSession.currentUser = { id: localUser.id, username: localUser.username, fullName: localUser.fullName, role: localUser.role, email: localUser.email };
+      saveSession(); showToast(`Welcome back, ${localUser.fullName}!`, "success"); navigateTo('#dashboard');
+      return;
+    }
+
+    // If no local match, try Firebase for student accounts registered via Firebase Auth
     if (isFirebaseActive && firebaseAuth) {
       const btn = e.target.querySelector('button[type="submit"]');
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Signing in...</span>';
       try {
         const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
-        const userCredential = await signInWithEmailAndPassword(firebaseAuth, emailVal, passwordVal);        const fbUser = userCredential.user;
+        const userCredential = await signInWithEmailAndPassword(firebaseAuth, emailVal, passwordVal);
+        const fbUser = userCredential.user;
 
         // Match to local user record or create one
         let localUserObj = appState.users.find(u => u.email.toLowerCase() === fbUser.email.toLowerCase());
@@ -397,16 +666,7 @@ function renderLoginView(container) {
         showToast(msg, "error");
       }
     } else {
-      // Local fallback (username OR email)
-      const user = appState.users.find(u =>
-        (u.username.toLowerCase() === emailVal.toLowerCase() ||
-         u.email.toLowerCase()    === emailVal.toLowerCase()) &&
-        u.password === passwordVal
-      );
-      if (user) {
-        currentSession.currentUser = { id: user.id, username: user.username, fullName: user.fullName, role: user.role, email: user.email };
-        saveSession(); showToast(`Welcome back, ${user.fullName}!`, "success"); navigateTo('#dashboard');
-      } else { showToast("Invalid email or password.", "error"); }
+      showToast("Invalid email or password.", "error");
     }
   });
 }
@@ -416,11 +676,7 @@ function renderRegisterView(container) {
   container.innerHTML = `
   <div class="auth-wrapper">
     <div class="glass-card auth-card fade-in">
-      <div class="auth-header"><img src="logo.jpg" alt="Speedify Logo" class="login-logo-img"><h2>Create Account</h2><p>Register as a student or staff administrator</p></div>
-      <div class="role-toggle">
-        <button type="button" class="role-btn active" id="role-student-btn" data-role="student"><i class="fa-solid fa-graduation-cap"></i> Student</button>
-        <button type="button" class="role-btn" id="role-mentor-btn" data-role="mentor"><i class="fa-solid fa-user-tie"></i> Mentor / Staff</button>
-      </div>
+      <div class="auth-header"><img src="logo.jpeg" alt="Speedify Logo" class="login-logo-img"><h2>Create Account</h2><p>Register as a student intern</p></div>
       <form id="form-register">
         <div class="form-group"><label class="form-label">Full Name</label><div class="input-container"><input class="form-control" type="text" id="reg-name" placeholder="John Doe" required><i class="fa-solid fa-id-card"></i></div></div>
         <div class="form-group"><label class="form-label">Email Address</label><div class="input-container"><input class="form-control" type="email" id="reg-email" placeholder="john.doe@gmail.com" required autocomplete="email"><i class="fa-solid fa-envelope"></i></div></div>
@@ -433,11 +689,7 @@ function renderRegisterView(container) {
     </div>
   </div>`;
   let selectedRole = 'student';
-  const roleStudentBtn = document.getElementById('role-student-btn');
-  const roleMentorBtn = document.getElementById('role-mentor-btn');
   const cohortGroup = document.getElementById('cohort-group');
-  roleStudentBtn.addEventListener('click', () => { selectedRole = 'student'; roleStudentBtn.classList.add('active'); roleMentorBtn.classList.remove('active'); cohortGroup.style.display = 'block'; });
-  roleMentorBtn.addEventListener('click', () => { selectedRole = 'mentor'; roleMentorBtn.classList.add('active'); roleStudentBtn.classList.remove('active'); cohortGroup.style.display = 'none'; });
   document.getElementById('form-register').addEventListener('submit', async (e) => {
     e.preventDefault();
     const fullName = document.getElementById('reg-name').value.trim();
@@ -473,6 +725,9 @@ function renderRegisterView(container) {
 
 // 4. STUDENT DASHBOARD
 function renderStudentDashboard(container) {
+  // Always reload latest state from localStorage so mentor changes are visible
+  const freshState = localStorage.getItem('speedify_portal_state');
+  if (freshState) { try { appState = JSON.parse(freshState); } catch(e) {} }
   const student = appState.users.find(u => u.id === currentSession.currentUser.id) || currentSession.currentUser;
   const todayStr = new Date().toISOString().split('T')[0];
   const todaysAttendance = appState.attendance.find(a => a.userId === student.id && a.date === todayStr);
@@ -490,30 +745,16 @@ function renderStudentDashboard(container) {
   </div>
   <div class="dashboard-grid">
     <div class="dashboard-left-content">
-      <div class="grid-cols-2">
-        <div class="glass-card attendance-panel">
-          <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:12px;">Daily Work Attendance</h3>
-          <div class="attendance-time" id="live-time">12:00:00 PM</div>
-          <div class="attendance-date" id="live-date">...</div>
-          <div style="display:flex;gap:16px;width:100%;justify-content:center;">
-            <button class="btn btn-primary" id="btn-clock-in" ${isCheckedIn ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}><i class="fa-solid fa-right-to-bracket"></i> Clock In</button>
-            <button class="btn btn-secondary" id="btn-clock-out" ${!isCheckedIn || isCheckedOut ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}><i class="fa-solid fa-right-from-bracket"></i> Clock Out</button>
-          </div>
-          <div style="margin-top:16px;font-size:12.5px;color:var(--text-secondary);" id="attendance-status-text">${isCheckedOut ? 'Logged Out for today' : (isCheckedIn ? 'Clocked In at ' + checkInTime : 'Not checked in yet')}</div>
-        </div>
-        <div class="glass-card" style="display:flex;flex-direction:column;justify-content:space-between;">
-          <div>
-            <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:16px;">Task Completion Metrics</h3>
-            <div class="task-progress-bar-container" style="width:100%;height:12px;margin-bottom:8px;"><div class="student-progress-bar" id="student-main-progress" style="width:0%"></div></div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;"><span id="txt-tasks-ratio">Tasks Completed: 0/0</span><span id="txt-progress-percent">0%</span></div>
-          </div>
-          <div style="border-top:1px solid var(--border-color);padding-top:16px;margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:center;">
-            <div><h4 style="font-size:11px;text-transform:uppercase;color:var(--text-muted);">Attendance</h4><p style="font-size:20px;font-weight:700;color:var(--accent-cyan);" id="txt-attendance-pct">0%</p></div>
-            <div><h4 style="font-size:11px;text-transform:uppercase;color:var(--text-muted);">Approved Reports</h4><p style="font-size:20px;font-weight:700;color:var(--success);" id="txt-approved-cnt">0</p></div>
-          </div>
+      <div class="glass-card" style="margin-bottom:24px;">
+        <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:16px;">Task Completion Metrics</h3>
+        <div class="task-progress-bar-container" style="width:100%;height:12px;margin-bottom:8px;"><div class="student-progress-bar" id="student-main-progress" style="width:0%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:20px;"><span id="txt-tasks-ratio">Tasks Completed: 0/0</span><span id="txt-progress-percent">0%</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:center;border-top:1px solid var(--border-color);padding-top:16px;">
+          <div><h4 style="font-size:11px;text-transform:uppercase;color:var(--text-muted);">Approved Reports</h4><p style="font-size:20px;font-weight:700;color:var(--success);" id="txt-approved-cnt">0</p></div>
+          <div><h4 style="font-size:11px;text-transform:uppercase;color:var(--text-muted);">Attendance Rate</h4><p style="font-size:20px;font-weight:700;color:var(--accent-cyan);" id="txt-attendance-pct">0%</p></div>
         </div>
       </div>
-      <div class="glass-card" style="margin-top:24px;">
+      <div class="glass-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <h3 style="font-size:16px;font-weight:600;">Current Tasks Checklist</h3>
           <a href="#" class="accent-text" style="font-size:12px;text-decoration:none;" onclick="event.preventDefault();document.querySelector('[data-tab=student-tasks]').click();">View All</a>
@@ -523,10 +764,11 @@ function renderStudentDashboard(container) {
     </div>
     <div class="dashboard-right-content">
       <div class="glass-card" style="height:100%;">
-        <h3 style="font-size:16px;font-weight:600;margin-bottom:16px;">Portal Activity Logs</h3>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:16px;font-size:13px;" id="student-activities">
-          <li style="display:flex;gap:10px;"><i class="fa-solid fa-circle-dot" style="color:var(--accent-cyan);margin-top:3px;"></i><div><p style="font-weight:500;">Authorized login token sync</p><span style="font-size:11px;color:var(--text-muted);">Just now</span></div></li>
-        </ul>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-size:16px;font-weight:600;"><i class="fa-solid fa-play-circle" style="color:var(--accent-cyan);margin-right:8px;"></i>Training Videos</h3>
+          <a href="#" class="accent-text" style="font-size:12px;text-decoration:none;" onclick="event.preventDefault();document.querySelector('[data-tab=student-videos]').click();">View All</a>
+        </div>
+        <div id="overview-videos-list" style="display:flex;flex-direction:column;gap:12px;"></div>
       </div>
     </div>
   </div>
@@ -536,9 +778,8 @@ function renderStudentDashboard(container) {
   <div class="view-header"><div class="view-title"><h1>Submit Daily Work Report</h1><p>Record daily activity logs and upload screenshots or demo videos.</p></div></div>
   <div class="glass-card" style="max-width:800px;margin:0 auto;">
     <form id="form-report">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+      <div style="display:grid;grid-template-columns:1fr;gap:20px;margin-bottom:20px;">
         <div><label class="form-label">Work Log Date</label><input class="form-control" type="date" id="report-date" required style="padding-left:16px;"></div>
-        <div><label class="form-label">Hours Invested</label><input class="form-control" type="number" id="report-hours" placeholder="e.g. 8" min="0.5" max="24" step="0.5" required style="padding-left:16px;"></div>
       </div>
       <div class="form-group"><label class="form-label">Detailed Work Summary</label><textarea class="form-control" id="report-summary" placeholder="Describe work completed today..." required></textarea></div>
       <label class="form-label">Attach Progress Proofs</label>
@@ -550,12 +791,12 @@ function renderStudentDashboard(container) {
           <div class="file-preview-name" id="screenshot-file-name"></div>
         </div>
         <div style="flex:1; display:flex; flex-direction:column; justify-content:center; border:2px dashed var(--border-color); border-radius:12px; padding:20px; background:rgba(8,12,20,0.3); transition:all 0.3s ease;">
-          <label class="form-label" style="margin-bottom:10px;"><i class="fa-brands fa-github" style="margin-right:6px; color:var(--accent-cyan);"></i>GitHub Repository Link</label>
+          <label class="form-label" style="margin-bottom:10px;"><i class="fa-solid fa-link" style="margin-right:6px; color:var(--accent-cyan);"></i>Links</label>
           <div class="input-container">
-            <input class="form-control" type="url" id="report-github" placeholder="https://github.com/username/repo" style="padding-left:42px;">
-            <i class="fa-brands fa-github" style="left:14px; top:50%; transform:translateY(-50%); position:absolute; color:var(--text-muted);"></i>
+            <input class="form-control" type="url" id="report-github" placeholder="https://your-project-link.com" style="padding-left:42px;">
+            <i class="fa-solid fa-link" style="left:14px; top:50%; transform:translateY(-50%); position:absolute; color:var(--text-muted);"></i>
           </div>
-          <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">Link to your day's commit or branch</p>
+          <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">Add any relevant project or demo link</p>
         </div>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:16px;">
@@ -603,22 +844,103 @@ function renderStudentDashboard(container) {
   <div class="view-header"><div class="view-title"><h1>My Assigned Tasks</h1><p>Review tasks assigned by the mentor and toggle completion checkmarks.</p></div></div>
   <div class="glass-card"><div class="task-list" id="assigned-tasks-list"></div></div>
 </div>
-<!-- TAB 5: RESOURCE LIBRARY -->
+<!-- TAB 5: TRAINING VIDEOS -->
+<div id="student-videos" class="dashboard-tab" style="display:none;">
+  <div class="view-header"><div class="view-title"><h1>Training Videos</h1><p>Watch recorded sessions and lectures uploaded by your mentor.</p></div></div>
+  <div id="student-videos-grid" class="resource-grid"></div>
+</div>
+<!-- TAB 5b: RESOURCE LIBRARY (hidden, kept for data) -->
 <div id="student-resources" class="dashboard-tab" style="display:none;">
-  <div class="view-header"><div class="view-title"><h1>Training & Lecture Resources</h1><p>Access recorded videos, lectures, and shared slides from Staff.</p></div></div>
   <div class="resource-grid" id="student-resources-grid"></div>
 </div>
-<!-- TAB 6: MY EARNINGS -->
+<!-- TAB 6: PAYMENT -->
 <div id="student-earnings" class="dashboard-tab" style="display:none;">
-  <div class="view-header"><div class="view-title"><h1>My Internship Earnings</h1><p>Track accumulated hours worked, billing rates, and historical payment receipt tokens.</p></div></div>
-  <div class="earnings-grid">
-    <div class="glass-card earnings-card"><h4>Total Accrued</h4><div class="amount amount-accrued" id="se-total-accrued">$0.00</div><div style="font-size:11.5px;color:var(--text-muted);margin-top:6px;" id="se-billing-rate">Billing rate: $0.00/hr</div></div>
-    <div class="glass-card earnings-card"><h4>Stipend Paid</h4><div class="amount amount-paid" id="se-total-paid">$0.00</div><div style="font-size:11.5px;color:var(--text-muted);margin-top:6px;">Transferred to account</div></div>
-    <div class="glass-card earnings-card"><h4>Pending Payout</h4><div class="amount amount-pending" id="se-total-pending">$0.00</div><div style="font-size:11.5px;color:var(--text-muted);margin-top:6px;">Accrued pending clearance</div></div>
+  <div class="view-header"><div class="view-title"><h1>Payment</h1><p>Complete your internship program fee payment using the details below.</p></div></div>
+
+  <!-- Payment Summary Cards -->
+  <div class="earnings-grid" style="margin-bottom:28px;">
+    <div class="glass-card earnings-card">
+      <h4>Program Fee</h4>
+      <div class="amount amount-accrued" style="font-size:28px;">₹999</div>
+      <div style="font-size:11.5px;color:var(--text-muted);margin-top:6px;">One-time internship fee</div>
+    </div>
+    <div class="glass-card earnings-card">
+      <h4>Payment Status</h4>
+      <div class="amount amount-pending" id="se-total-pending" style="font-size:20px;margin-top:8px;">Pending</div>
+      <div style="font-size:11.5px;color:var(--text-muted);margin-top:6px;">Awaiting confirmation</div>
+    </div>
+    <div class="glass-card earnings-card">
+      <h4>Support</h4>
+      <div style="font-size:13px;color:var(--text-primary);margin-top:8px;font-weight:600;">speedifytechx@gmail.com</div>
+      <div style="font-size:11.5px;color:var(--text-muted);margin-top:6px;">For payment queries</div>
+    </div>
   </div>
-  <div class="glass-card">
-    <h3 style="font-size:16px;font-weight:600;margin-bottom:20px;">Payout Transactions Log</h3>
-    <div class="table-responsive"><table class="custom-table"><thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Ref No.</th><th>Status</th></tr></thead><tbody id="student-payouts-tbody"></tbody></table></div>
+
+  <!-- Payment Methods -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;">
+
+    <!-- UPI Payment -->
+    <div class="glass-card" style="padding:28px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(0,242,254,0.1);display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,242,254,0.2);">
+          <i class="fa-solid fa-mobile-screen-button" style="color:var(--accent-cyan);font-size:18px;"></i>
+        </div>
+        <div>
+          <h3 style="font-size:16px;font-weight:700;">UPI Payment</h3>
+          <p style="font-size:12px;color:var(--text-muted);">Pay instantly via any UPI app</p>
+        </div>
+      </div>
+      <div style="background:rgba(8,12,20,0.5);border:1px solid var(--border-color);border-radius:12px;padding:18px;margin-bottom:16px;">
+        <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">UPI ID</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:15px;font-weight:600;color:var(--accent-cyan);">speedifytechx@okicici</span>
+          <button onclick="navigator.clipboard.writeText('speedifytechx@okicici');this.innerHTML='<i class=\'fa-solid fa-check\'></i>';setTimeout(()=>this.innerHTML='<i class=\'fa-regular fa-copy\'></i>',1500);" style="background:rgba(0,242,254,0.1);border:1px solid rgba(0,242,254,0.2);color:var(--accent-cyan);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px;"><i class="fa-regular fa-copy"></i></button>
+        </div>
+      </div>
+      <div style="background:rgba(8,12,20,0.5);border:1px solid var(--border-color);border-radius:12px;padding:18px;">
+        <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Phone Pay / Google Pay</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:15px;font-weight:600;color:var(--accent-cyan);">+91 8610535231</span>
+          <button onclick="navigator.clipboard.writeText('8610535231');this.innerHTML='<i class=\'fa-solid fa-check\'></i>';setTimeout(()=>this.innerHTML='<i class=\'fa-regular fa-copy\'></i>',1500);" style="background:rgba(0,242,254,0.1);border:1px solid rgba(0,242,254,0.2);color:var(--accent-cyan);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px;"><i class="fa-regular fa-copy"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank Transfer -->
+    <div class="glass-card" style="padding:28px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(155,81,224,0.1);display:flex;align-items:center;justify-content:center;border:1px solid rgba(155,81,224,0.2);">
+          <i class="fa-solid fa-building-columns" style="color:var(--accent-purple);font-size:18px;"></i>
+        </div>
+        <div>
+          <h3 style="font-size:16px;font-weight:700;">Bank Transfer</h3>
+          <p style="font-size:12px;color:var(--text-muted);">NEFT / IMPS / RTGS</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="background:rgba(8,12,20,0.5);border:1px solid var(--border-color);border-radius:10px;padding:14px;">
+          <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Account Name</p>
+          <p style="font-size:14px;font-weight:600;">Speedify Tech X</p>
+        </div>
+        <div style="background:rgba(8,12,20,0.5);border:1px solid var(--border-color);border-radius:10px;padding:14px;">
+          <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Account Number</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <p style="font-size:14px;font-weight:600;">XXXX XXXX 5231</p>
+            <button onclick="navigator.clipboard.writeText('XXXXXXXXXX5231');this.innerHTML='<i class=\'fa-solid fa-check\'></i>';setTimeout(()=>this.innerHTML='<i class=\'fa-regular fa-copy\'></i>',1500);" style="background:rgba(155,81,224,0.1);border:1px solid rgba(155,81,224,0.2);color:var(--accent-purple);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px;"><i class="fa-regular fa-copy"></i></button>
+          </div>
+        </div>
+        <div style="background:rgba(8,12,20,0.5);border:1px solid var(--border-color);border-radius:10px;padding:14px;">
+          <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">IFSC Code</p>
+          <p style="font-size:14px;font-weight:600;">ICIC0001234</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructions -->
+  <div class="glass-card instruction-box" style="border-color:rgba(0,242,254,0.2);">
+    <p style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--accent-cyan);"><i class="fa-solid fa-circle-info" style="margin-right:8px;"></i>After Payment</p>
+    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Once you complete the payment, please send your <strong style="color:var(--text-primary);">payment screenshot</strong> to <a href="mailto:speedifytechx@gmail.com" style="color:var(--accent-cyan);">speedifytechx@gmail.com</a> or WhatsApp us at <a href="tel:+918610535231" style="color:var(--accent-cyan);">+91 8610535231</a> for confirmation. Your account will be activated within 24 hours.</p>
   </div>
 </div>
 <!-- TAB 7: WORK HISTORY -->
@@ -727,14 +1049,13 @@ function renderStudentDashboard(container) {
   document.getElementById('form-report').addEventListener('submit', (e) => {
     e.preventDefault();
     const dateVal = document.getElementById('report-date').value;
-    const hoursVal = parseFloat(document.getElementById('report-hours').value);
     const summaryVal = document.getElementById('report-summary').value.trim();
     const githubLink = document.getElementById('report-github').value.trim();
     if (appState.reports.some(r => r.userId === student.id && r.date === dateVal)) { showToast(`Report for ${dateVal} already submitted.`, "error"); return; }
     const ssFile = ssInput.files[0];
     const newReport = {
       id: generateId('rep'), userId: student.id, studentName: student.fullName,
-      date: dateVal, summary: summaryVal, hoursWorked: hoursVal,
+      date: dateVal, summary: summaryVal, hoursWorked: 0,
       githubLink: githubLink || "",
       videoName: "", videoUrl: "",
       screenshotName: ssFile ? ssFile.name : "", screenshotUrl: ssFile ? ssPreviewImg.src : "",
@@ -819,10 +1140,57 @@ function renderStudentDashboard(container) {
     }).join('');
   }
 
+  function populateStudentVideos() {
+    const videos = appState.resources.filter(r => r.type === 'video');    // Full videos tab
+    const grid = document.getElementById('student-videos-grid');
+    if (grid) {
+      if (videos.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);"><i class="fa-solid fa-video" style="font-size:40px;margin-bottom:14px;display:block;opacity:0.3;"></i><p>No training videos uploaded yet.<br>Check back soon!</p></div>`;
+      } else {
+        grid.innerHTML = videos.map(r => `
+          <div class="glass-card resource-card">
+            <div>
+              <div class="resource-badge res-video" style="margin-bottom:12px;"><i class="fa-solid fa-play"></i> VIDEO</div>
+              <h4 class="resource-title">${r.title}</h4>
+              <p class="resource-desc">${r.description}</p>
+              <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;"><i class="fa-solid fa-user" style="margin-right:4px;"></i>${r.postedBy} &nbsp;·&nbsp; ${new Date(r.postedAt).toLocaleDateString()}</p>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="playResourceVideo('${r.id}')"><i class="fa-solid fa-play"></i> Watch Now</button>
+          </div>`).join('');
+      }
+    }
+    // Overview preview (latest 3)
+    const overviewList = document.getElementById('overview-videos-list');
+    if (overviewList) {
+      if (videos.length === 0) {
+        overviewList.innerHTML = `<p style="color:var(--text-muted);font-size:13px;padding:12px 0;">No training videos yet.</p>`;
+      } else {
+        overviewList.innerHTML = videos.slice(0, 3).map(r => `
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(0,242,254,0.04);border:1px solid rgba(0,242,254,0.1);border-radius:10px;cursor:pointer;" onclick="playResourceVideo('${r.id}')">
+            <div style="width:38px;height:38px;border-radius:10px;background:rgba(0,242,254,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fa-solid fa-play" style="color:var(--accent-cyan);font-size:14px;"></i>
+            </div>
+            <div style="overflow:hidden;">
+              <p style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.title}</p>
+              <p style="font-size:11px;color:var(--text-muted);">${r.postedBy}</p>
+            </div>
+          </div>`).join('');
+      }
+    }
+  }
+  // Expose globally so switchTab can refresh it
+  window.populateStudentVideosGlobal = populateStudentVideos;
+
   window.playResourceVideo = function(resId) {
     const resource = appState.resources.find(r => r.id === resId);
     if (!resource) return;
-    showModal(resource.title, `<div class="modal-media-wrapper"><video src="${resource.url}" controls autoplay></video></div><p style="font-size:13px;color:var(--text-secondary);">${resource.description}</p>`);
+    // Resolve session-stored video blobs
+    let videoUrl = resource.url || '';
+    if (videoUrl.startsWith('__session:')) {
+      videoUrl = sessionStorage.getItem('res_video_' + videoUrl.replace('__session:', '')) || '';
+    }
+    if (!videoUrl && resource.linkUrl) videoUrl = resource.linkUrl;
+    showModal(resource.title, `<div class="modal-media-wrapper">${videoUrl ? `<video src="${videoUrl}" controls autoplay style="width:100%;max-height:400px;"></video>` : `<p style="padding:24px;text-align:center;color:var(--text-muted);">Video unavailable — session expired. Please re-upload.</p>`}</div><p style="font-size:13px;color:var(--text-secondary);margin-top:12px;">${resource.description}</p>`);
   };
 
   function populateStudentEarnings() {
@@ -915,7 +1283,7 @@ function renderStudentDashboard(container) {
   }
 
   populateStudentTasks(); populateStudentProjects(); populateStudentResources();
-  populateStudentEarnings(); populateStudentHistory(); populateStudentProfileData();
+  populateStudentVideos(); populateStudentHistory(); populateStudentProfileData();
   updateStudentMetrics();
 }
 
@@ -924,8 +1292,13 @@ let attendanceChart = null;
 let reportChart = null;
 
 function renderMentorDashboard(container) {
+  // Always reload latest state so new student registrations are visible
+  const freshState = localStorage.getItem('speedify_portal_state');
+  if (freshState) { try { appState = JSON.parse(freshState); } catch(e) {} }
   const mentor = appState.users.find(u => u.id === currentSession.currentUser.id) || currentSession.currentUser;
-  const studentsOnly = appState.users.filter(u => u.role === 'student');
+  // Always read fresh from appState — not a stale closure
+  const getStudents = () => appState.users.filter(u => u.role === 'student');
+  const studentsOnly = getStudents();
 
   container.innerHTML = `
 <!-- TAB 1: ANALYTICS -->
@@ -1060,89 +1433,24 @@ function renderMentorDashboard(container) {
 </div>
 <!-- TAB 10: MENTOR PROFILE -->
 <div id="mentor-profile" class="dashboard-tab" style="display:none;">
-  <div class="view-header"><div class="view-title"><h1>My Personal Profile</h1><p>Verify administrative credentials and details.</p></div></div>
+  <div class="view-header"><div class="view-title"><h1>My Profile</h1><p>Staff administrator account details.</p></div></div>
   <div class="profile-container">
     <div class="glass-card profile-sidebar">
       <div class="profile-avatar-large" id="mp-avatar">M</div>
-      <h2 id="mp-name">Mentor Name</h2><p id="mp-role-txt">Lead Program Director</p>
-      <div style="border-top:1px solid var(--border-color);padding-top:16px;margin-top:16px;text-align:left;font-size:13px;">
+      <h2 id="mp-name">Mentor Name</h2>
+      <p id="mp-role-txt" style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Lead Program Director</p>
+      <div style="border-top:1px solid var(--border-color);padding-top:16px;margin-top:4px;text-align:left;font-size:13px;">
         <p style="margin-bottom:8px;"><strong style="color:var(--text-secondary);">Department:</strong> <span id="mp-sidebar-dept">...</span></p>
-        <p><strong style="color:var(--text-secondary);">Enrolled Date:</strong> <span id="mp-sidebar-joined">...</span></p>
+        <p><strong style="color:var(--text-secondary);">Member Since:</strong> <span id="mp-sidebar-joined">...</span></p>
       </div>
     </div>
-    <div style="display:flex; flex-direction:column; gap:24px;">
-      <div class="glass-card profile-detail-card">
-        <h3 style="font-size:16px;font-weight:600;margin-bottom:20px;border-bottom:1px solid var(--border-color);padding-bottom:10px;">Staff Credentials</h3>
-        <div class="profile-info-grid">
-          <div class="profile-info-item"><h4>Email Address</h4><p id="mp-detail-email">...</p></div>
-          <div class="profile-info-item"><h4>Designation</h4><p id="mp-detail-desig">...</p></div>
-          <div class="profile-info-item"><h4>Username</h4><p id="mp-detail-username">...</p></div>
-          <div class="profile-info-item"><h4>Admin Status</h4><p><span class="badge badge-approved">Active Administrator</span></p></div>
-        </div>
-      </div>
-
-      <!-- Google Sheets Integration -->
-      <div class="glass-card" style="border:1px solid rgba(16,185,129,0.2);">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-color);">
-          <div style="width:38px;height:38px;border-radius:10px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);display:flex;align-items:center;justify-content:center;">
-            <i class="fa-solid fa-table-cells-large" style="color:var(--success);font-size:16px;"></i>
-          </div>
-          <div>
-            <h3 style="font-size:15px;font-weight:700;margin-bottom:2px;">Google Sheets Integration</h3>
-            <p style="font-size:11px;color:var(--text-muted);">Auto-sync internship applications to your spreadsheet</p>
-          </div>
-          <span id="sheets-status-badge" class="badge ${appState.config.sheetsWebhook ? 'badge-approved' : 'badge-pending'}" style="margin-left:auto;">
-            ${appState.config.sheetsWebhook ? '<i class="fa-solid fa-circle-check"></i> Connected' : '<i class="fa-solid fa-circle-xmark"></i> Not Connected'}
-          </span>
-        </div>
-
-        <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;padding:14px;background:rgba(16,185,129,0.03);border:1px solid rgba(16,185,129,0.1);border-radius:10px;">
-          <strong style="color:var(--text-primary);font-size:13px;">How to connect Google Sheets:</strong><br><br>
-          <strong style="color:var(--accent-cyan);">Step 1.</strong> Open <a href="https://sheets.google.com" target="_blank" style="color:var(--accent-cyan);">Google Sheets</a> → create a new spreadsheet<br>
-          <strong style="color:var(--accent-cyan);">Step 2.</strong> Click <strong>Extensions → Apps Script</strong><br>
-          <strong style="color:var(--accent-cyan);">Step 3.</strong> Paste this script and click <strong>Deploy → New Deployment → Web App</strong> (Anyone can access):<br><br>
-          <pre id="apps-script-snippet" style="background:rgba(0,0,0,0.4);padding:12px;border-radius:8px;font-size:11px;color:#a5f3fc;overflow-x:auto;white-space:pre-wrap;line-height:1.6;">function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(["Date","Full Name","Email","Phone","Role","University","Cohort","Resume","Portfolio","Cover Letter","Status"]);
-  }
-  var data = JSON.parse(e.postData.contents);
-  sheet.appendRow([
-    new Date(data.appliedAt).toLocaleDateString(),
-    data.fullName, data.email, data.phone, data.role,
-    data.university, data.preferredCohort, data.resumeLink,
-    data.portfolioLink, data.coverLetter, data.status
-  ]);
-  return ContentService.createTextOutput("OK");
-}</pre>
-          <button class="btn btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('apps-script-snippet').innerText); showToast('Script copied!','success');" style="padding:6px 14px;font-size:11px;margin-top:8px;">
-            <i class="fa-solid fa-copy"></i> Copy Script
-          </button><br><br>
-          <strong style="color:var(--accent-cyan);">Step 4.</strong> Copy the <strong>Web App URL</strong> from the deployment and paste it below.
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;">
-            <span>Google Apps Script Web App URL</span>
-            <span id="webhook-validate-msg" style="font-size:10px;"></span>
-          </label>
-          <div class="input-container">
-            <input class="form-control" type="url" id="cfg-sheets-webhook-input"
-              placeholder="https://script.google.com/macros/s/AKfycbx.../exec"
-              value="${appState.config.sheetsWebhook || ''}"
-              style="padding-left:42px;">
-            <i class="fa-solid fa-link" style="left:14px;top:50%;transform:translateY(-50%);position:absolute;color:var(--text-muted);"></i>
-          </div>
-        </div>
-        <div style="display:flex;gap:12px;">
-          <button class="btn btn-primary" id="btn-save-webhook" style="background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 15px rgba(16,185,129,0.2);">
-            <i class="fa-solid fa-plug"></i><span>Save & Connect</span>
-          </button>
-          <button class="btn btn-secondary" id="btn-test-webhook" style="color:var(--accent-cyan);border-color:rgba(0,242,254,0.2);">
-            <i class="fa-solid fa-paper-plane"></i><span>Send Test Row</span>
-          </button>
-          ${appState.config.sheetsWebhook ? `<button class="btn btn-secondary" id="btn-disconnect-webhook" style="color:var(--danger);border-color:rgba(244,63,94,0.2);margin-left:auto;"><i class="fa-solid fa-plug-circle-xmark"></i><span>Disconnect</span></button>` : ''}
-        </div>
+    <div class="glass-card profile-detail-card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:20px;border-bottom:1px solid var(--border-color);padding-bottom:10px;">Staff Details</h3>
+      <div class="profile-info-grid">
+        <div class="profile-info-item"><h4>Email Address</h4><p id="mp-detail-email">...</p></div>
+        <div class="profile-info-item"><h4>Designation</h4><p id="mp-detail-desig">...</p></div>
+        <div class="profile-info-item"><h4>Role</h4><p>Staff / Mentor</p></div>
+        <div class="profile-info-item"><h4>Account Status</h4><p><span class="badge badge-approved">Active Administrator</span></p></div>
       </div>
     </div>
   </div>
@@ -1151,9 +1459,9 @@ function renderMentorDashboard(container) {
   // --- MENTOR LOGIC WIRE-UP ---
   const taskAssigneeSelect = document.getElementById('task-assignee');
   const trackerStudentSelector = document.getElementById('tracker-student-selector');
-  if (taskAssigneeSelect) taskAssigneeSelect.innerHTML = studentsOnly.map(s => `<option value="${s.id}">${s.fullName} (${s.cohort || 'N/A'})</option>`).join('');
+  if (taskAssigneeSelect) taskAssigneeSelect.innerHTML = getStudents().map(s => `<option value="${s.id}">${s.fullName} (${s.cohort || 'N/A'})</option>`).join('');
   if (trackerStudentSelector) {
-    trackerStudentSelector.innerHTML = studentsOnly.map(s => `<option value="${s.id}">${s.fullName} (${s.cohort || 'N/A'})</option>`).join('');
+    trackerStudentSelector.innerHTML = getStudents().map(s => `<option value="${s.id}">${s.fullName} (${s.cohort || 'N/A'})</option>`).join('');
     trackerStudentSelector.addEventListener('change', () => populateMentorWorkTrackerData(trackerStudentSelector.value));
   }
   const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
@@ -1196,7 +1504,7 @@ function renderMentorDashboard(container) {
     const tbody = document.getElementById('mentor-students-tbody');
     if (!tbody) return;
     const searchQuery = document.getElementById('students-search').value.toLowerCase();
-    const filtered = studentsOnly.filter(s => s.fullName.toLowerCase().includes(searchQuery));
+    const filtered = getStudents().filter(s => s.fullName.toLowerCase().includes(searchQuery));
     if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">No matching interns found.</td></tr>`; return; }
     tbody.innerHTML = filtered.map(s => {
       const sTasks = appState.tasks.filter(t => t.assignedTo === s.id);
@@ -1240,7 +1548,7 @@ function renderMentorDashboard(container) {
         return `<div class="timeline-item timeline-item-${e.type}"><div class="timeline-marker"></div><div class="timeline-date">${e.date}</div><div class="timeline-content-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><h4 style="margin-bottom:0;">${e.title}</h4><span class="badge ${badgeClass}">${e.status || 'logged'}</span></div><p>${e.content}</p></div></div>`;
       }).join('');
   }
-  if (studentsOnly.length > 0 && trackerStudentSelector) populateMentorWorkTrackerData(studentsOnly[0].id);
+  if (getStudents().length > 0 && trackerStudentSelector) populateMentorWorkTrackerData(getStudents()[0].id);
 
   // Resource board
   const resTypeSelect = document.getElementById('res-type-input');
@@ -1254,20 +1562,63 @@ function renderMentorDashboard(container) {
   if (resVideoFileInput) {
     resVideoFileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
-      if (file) { const objectUrl = URL.createObjectURL(file); sessionBlobs[file.name] = objectUrl; resVideoBoxContent.querySelector('span').innerText = 'Video Selected'; resVideoFileName.innerText = file.name; }
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => { sessionBlobs[file.name] = ev.target.result; };
+        reader.readAsDataURL(file);
+        resVideoBoxContent.querySelector('span').innerText = 'Video Selected';
+        resVideoFileName.innerText = file.name;
+      }
     });
   }
   document.getElementById('form-resource').addEventListener('submit', (e) => {
     e.preventDefault();
     const videoFile = resVideoFileInput ? resVideoFileInput.files[0] : null;
-    const newResource = { id: generateId('res'), title: document.getElementById('res-title-input').value.trim(), type: document.getElementById('res-type-input').value, url: videoFile ? sessionBlobs[videoFile.name] : "", fileName: videoFile ? videoFile.name : "", description: document.getElementById('res-desc-input').value.trim(), linkUrl: document.getElementById('res-link-input').value.trim() || '', postedBy: mentor.fullName, postedAt: new Date().toISOString() };
-    appState.resources.push(newResource); saveState();
-    showToast("Training resource posted!", "success");
-    document.getElementById('form-resource').reset();
-    if (resVideoFileName) resVideoFileName.innerText = '';
-    if (resVideoBoxContent) resVideoBoxContent.querySelector('span').innerText = 'Select mp4, webm file';
-    if (resVideoGroup) resVideoGroup.style.display = 'block';
-    populateMentorResources();
+    const title = document.getElementById('res-title-input').value.trim();
+    const type  = document.getElementById('res-type-input').value;
+    const desc  = document.getElementById('res-desc-input').value.trim();
+    const link  = document.getElementById('res-link-input').value.trim() || '';
+
+    const saveResource = (dataUrl) => {
+      // Store large video blobs in sessionStorage keyed by resource ID, keep URL ref in state
+      const resId = generateId('res');
+      let storedUrl = '';
+      if (dataUrl && dataUrl.startsWith('data:video')) {
+        try {
+          sessionStorage.setItem('res_video_' + resId, dataUrl);
+          storedUrl = '__session:' + resId; // lightweight marker
+        } catch(e) {
+          storedUrl = ''; // session storage also full, skip
+        }
+      } else {
+        storedUrl = dataUrl || '';
+      }
+      const newResource = {
+        id: resId, title, type,
+        url: storedUrl,
+        fileName: videoFile ? videoFile.name : "",
+        description: desc, linkUrl: link,
+        postedBy: mentor.fullName, postedAt: new Date().toISOString()
+      };
+      appState.resources.push(newResource); saveState();
+      showToast("Training resource posted!", "success");
+      document.getElementById('form-resource').reset();
+      if (resVideoFileName) resVideoFileName.innerText = '';
+      if (resVideoBoxContent) resVideoBoxContent.querySelector('span').innerText = 'Select mp4, webm file';
+      if (resVideoGroup) resVideoGroup.style.display = 'block';
+      populateMentorResources();
+    };
+
+    if (videoFile) {
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+      const reader = new FileReader();
+      reader.onload = (ev) => { btn.disabled = false; btn.innerHTML = '<span>Post Resource</span><i class="fa-solid fa-paper-plane"></i>'; saveResource(ev.target.result); };
+      reader.onerror = () => { btn.disabled = false; btn.innerHTML = '<span>Post Resource</span><i class="fa-solid fa-paper-plane"></i>'; showToast("Failed to read video file.", "error"); };
+      reader.readAsDataURL(videoFile);
+    } else {
+      saveResource("");
+    }
   });
 
   function populateMentorResources() {
@@ -1284,7 +1635,7 @@ function renderMentorDashboard(container) {
   function populateMentorPayments() {
     const tbody = document.getElementById('mentor-billing-tbody');
     if (!tbody) return;
-    tbody.innerHTML = studentsOnly.map(s => {
+    tbody.innerHTML = getStudents().map(s => {
       const sReports = appState.reports.filter(r => r.userId === s.id && r.status === 'approved');
       const sPayments = appState.payments.filter(p => p.userId === s.id);
       const rate = s.hourlyRate || 15;
@@ -1438,11 +1789,10 @@ function renderMentorDashboard(container) {
     document.getElementById('mp-sidebar-joined').innerText = mentor.joinedDate || 'N/A';
     document.getElementById('mp-detail-email').innerText = mentor.email || 'N/A';
     document.getElementById('mp-detail-desig').innerText = mentor.designation || 'Lead Mentor';
-    document.getElementById('mp-detail-username').innerText = mentor.username;
   }
 
   function updateMentorMetrics() {
-    const totalStudents = studentsOnly.length;
+    const totalStudents = getStudents().length;
     const pendingReportsCount = appState.reports.filter(r => r.status === 'pending').length;
     const totalCheckedInDays = appState.attendance.filter(a => a.status === 'present' || a.status === 'late').length;
     const avgAttendancePct = (totalStudents * 20) > 0 ? Math.round((totalCheckedInDays / (totalStudents * 20)) * 100) : 0;
