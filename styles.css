@@ -462,6 +462,64 @@ select.form-control { padding-left: 16px; }
 .hf-footer-logo { width: 32px; height: 32px; border-radius: 8px; object-fit: contain; background: #fff; padding: 3px; }
 .hf-footer-brand-name { font-size: 17px; font-weight: 700; color: #f1f5f9; }
 .hf-footer-brand-desc { color: #64748b; font-size: 13.5px; line-height: 1.65; max-width: 280px; }
+
+/* Footer contact + animation */
+@keyframes hfFooterFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes hfFooterIconPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.35); }
+  50%      { box-shadow: 0 0 0 6px rgba(124,58,237,0); }
+}
+@keyframes hfFooterLinkShimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+.hf-footer-fade-in { opacity: 0; animation: hfFooterFadeUp 0.65s ease forwards; }
+.hf-footer-contact-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.hf-footer-contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+.hf-footer-contact-item i {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #a78bfa;
+  flex-shrink: 0;
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.hf-footer-contact-item:hover {
+  color: #f1f5f9;
+  transform: translateX(5px);
+}
+.hf-footer-contact-item:hover i {
+  background: rgba(124,58,237,0.18);
+  border-color: rgba(139,92,246,0.35);
+  transform: scale(1.08);
+  animation: hfFooterIconPulse 1.4s ease infinite;
+}
+.hf-footer-contact-website span {
+  background: linear-gradient(90deg, #a78bfa, #fff, #a78bfa);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hfFooterLinkShimmer 4s linear infinite;
+}
 .hf-footer-socials { display: flex; gap: 10px; margin-top: 4px; }
 .hf-footer-social-btn { width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #64748b; display: flex; align-items: center; justify-content: center; font-size: 14px; text-decoration: none; transition: all 0.2s; }
 .hf-footer-social-btn:hover { background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.3); color: #a78bfa; }
