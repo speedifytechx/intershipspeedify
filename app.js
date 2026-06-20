@@ -1822,3 +1822,47 @@ function initAnalyticsCharts() {
 }
 
 // --- GLOBAL INIT handled by initFirebase().then() at top of file ---
+
+
+// ─────────────────────────────────────────────────────────────
+// MOBILE SIDEBAR TOGGLE
+// ─────────────────────────────────────────────────────────────
+(function initMobileSidebar() {
+  const hamburger = document.getElementById('btn-hamburger');
+  const backdrop  = document.getElementById('sidebar-backdrop');
+  const sidebar   = document.getElementById('sidebar');
+
+  function openSidebar() {
+    if (!sidebar) return;
+    sidebar.classList.remove('hidden');
+    if (backdrop) backdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    if (!sidebar) return;
+    sidebar.classList.add('hidden');
+    if (backdrop) backdrop.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (hamburger) hamburger.addEventListener('click', openSidebar);
+  if (backdrop)  backdrop.addEventListener('click', closeSidebar);
+
+  // Close sidebar when a nav item is tapped on mobile
+  document.addEventListener('click', function(e) {
+    if (window.innerWidth > 768) return;
+    const navItem = e.target.closest('.nav-item');
+    if (navItem && sidebar && !sidebar.classList.contains('hidden')) {
+      closeSidebar();
+    }
+  });
+
+  // On resize to desktop, remove mobile overflow lock
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      document.body.style.overflow = '';
+      if (backdrop) backdrop.classList.remove('active');
+    }
+  });
+})();
