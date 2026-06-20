@@ -24,6 +24,18 @@
         <a href="index.html#login" class="btn-nav-login">Login</a>
         <a href="index.html#apply" class="btn-nav-cta">Get Started <i class="fa-solid fa-arrow-right"></i></a>
       </div>
+      <!-- Mobile hamburger -->
+      <button class="btn-mobile-nav" id="mobileNavBtn" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars" id="mobileNavIcon"></i>
+      </button>
+    </div>
+    <!-- Mobile nav drawer -->
+    <div class="nav-mobile-drawer" id="mobileNavDrawer">
+      <a href="#">Home</a>
+      <a href="#domains">Domains</a>
+      <a href="#contact">Contact</a>
+      <a href="index.html#login">Login</a>
+      <a href="index.html#apply">Get Started</a>
     </div>
   </nav>
 
@@ -199,6 +211,24 @@
     window.addEventListener('scroll', () => {
       document.getElementById('scrollTop').style.opacity = window.scrollY > 300 ? '1' : '0';
     });
+
+    // Mobile nav toggle
+    const mobileNavBtn    = document.getElementById('mobileNavBtn');
+    const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+    const mobileNavIcon   = document.getElementById('mobileNavIcon');
+    if (mobileNavBtn && mobileNavDrawer) {
+      mobileNavBtn.addEventListener('click', () => {
+        const isOpen = mobileNavDrawer.classList.toggle('open');
+        mobileNavIcon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+      });
+      // Close drawer when a link is clicked
+      mobileNavDrawer.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileNavDrawer.classList.remove('open');
+          mobileNavIcon.className = 'fa-solid fa-bars';
+        });
+      });
+    }
   </script>
 </body>
 </html>
