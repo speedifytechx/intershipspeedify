@@ -394,8 +394,22 @@ function renderHomeView(container) {
             <span class="hf-footer-brand-name">Speedify <span class="home-accent">Tech X</span></span>
           </div>
           <p class="hf-footer-brand-desc">Empowering the next generation of tech leaders through immersive, project-based internships.</p>
+          <div class="hf-footer-contact-list">
+            <a href="mailto:speedifytechx@gmail.com" class="hf-footer-contact-item hf-footer-fade-in" style="animation-delay:0.1s">
+              <i class="fa-solid fa-envelope"></i>
+              <span>speedifytechx@gmail.com</span>
+            </a>
+            <a href="tel:+918610535231" class="hf-footer-contact-item hf-footer-fade-in" style="animation-delay:0.2s">
+              <i class="fa-solid fa-phone"></i>
+              <span>+91 8610535231</span>
+            </a>
+            <a href="https://speedifytechx.xyz/" target="_blank" rel="noopener noreferrer" class="hf-footer-contact-item hf-footer-contact-website hf-footer-fade-in" style="animation-delay:0.3s">
+              <i class="fa-solid fa-globe"></i>
+              <span>speedifytechx.xyz</span>
+            </a>
+          </div>
           <div class="hf-footer-socials">
-            <a href="https://www.instagram.com/speedifytechx?igsh=OW5lcGgxejd1MXJq" target="_blank" class="hf-footer-social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.instagram.com/speedifytechx?igsh=OW5lcGgxejd1MXJq" target="_blank" rel="noopener noreferrer" class="hf-footer-social-btn hf-footer-fade-in" style="animation-delay:0.4s" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
           </div>
         </div>
         <div class="hf-footer-links-col">
@@ -589,21 +603,15 @@ function renderApplyView(container) {
             </select>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
-          <div>
-            <label class="form-label">Available Duration</label>
-            <select class="form-control" id="apply-duration" style="padding-left:16px;background-image:none;">
-              <option value="">-- Select Duration --</option>
-              <option>1 Month</option>
-              <option>2 Months</option>
-              <option>3 Months</option>
-              <option>6 Months</option>
-            </select>
-          </div>
-          <div>
-            <label class="form-label">LinkedIn Profile</label>
-            <input class="form-control" type="url" id="apply-linkedin" placeholder="https://linkedin.com/in/yourname" style="padding-left:16px;">
-          </div>
+        <div style="margin-bottom:18px;">
+          <label class="form-label">Available Duration</label>
+          <select class="form-control" id="apply-duration" style="padding-left:16px;background-image:none;">
+            <option value="">-- Select Duration --</option>
+            <option>1 Month</option>
+            <option>2 Months</option>
+            <option>3 Months</option>
+            <option>6 Months</option>
+          </select>
         </div>
 
         <!-- Section: About -->
@@ -655,7 +663,6 @@ function renderApplyView(container) {
       role:         document.getElementById('apply-role').value,
       mode:         document.getElementById('apply-mode').value,
       duration:     document.getElementById('apply-duration').value,
-      linkedin:     document.getElementById('apply-linkedin').value.trim(),
       whyJoin:      document.getElementById('apply-why').value.trim(),
       skills:       document.getElementById('apply-skills').value.trim(),
       status:       'Review',
@@ -1135,9 +1142,9 @@ function doPost(e) {
       sheet = ss.insertSheet("Applications");
       sheet.appendRow(["S.No","ID","Full Name","Email","Phone","City",
         "University","Degree","Year of Study","Grad Year",
-        "Domain","Mode","Duration","LinkedIn",
+        "Domain","Mode","Duration",
         "Why Join","Skills","Status","Applied At"]);
-      var header = sheet.getRange(1, 1, 1, 18);
+      var header = sheet.getRange(1, 1, 1, 17);
       header.setBackground("#1a1a2e");
       header.setFontColor("#00f2fe");
       header.setFontWeight("bold");
@@ -1159,13 +1166,12 @@ function doPost(e) {
       data.role        || "",
       data.mode        || "",
       data.duration    || "",
-      data.linkedin    || "",
       data.whyJoin     || "",
       data.skills      || "",
       data.status      || "Review",
       data.appliedAt   || new Date().toISOString()
     ]);
-    sheet.autoResizeColumns(1, 18);
+    sheet.autoResizeColumns(1, 17);
     return ContentService
       .createTextOutput(JSON.stringify({ status: "ok" }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -1182,33 +1188,16 @@ function testSheet() {
 }`;
     showModal('Google Apps Script Code', '<p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:12px;">Copy this into your Google Apps Script project (Code.gs):</p><pre style="background:rgba(0,0,0,0.4);padding:16px;border-radius:8px;font-size:11.5px;overflow-x:auto;white-space:pre-wrap;color:#a5f3fc;line-height:1.6;">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre><button class="btn btn-primary btn-full" style="margin-top:16px;" onclick="navigator.clipboard.writeText(document.querySelector(\'.modal-body pre\').innerText);showToast(\'Copied!\',\'success\')"><i class="fa-solid fa-copy"></i> Copy Code</button>');
   };
-    }
-    var data = JSON.parse(e.postData.contents);
-    sheet.appendRow([
-      data.id, data.fullName, data.email, data.phone, data.city,
-      data.university, data.degree, data.yearOfStudy, data.gradYear,
-      data.role, data.mode, data.duration, data.linkedin,
-      data.whyJoin, data.skills, data.status, data.appliedAt
-    ]);
-    return ContentService.createTextOutput(JSON.stringify({status:"ok"}))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({status:"error",message:err.toString()}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}`;
-    showModal('Google Apps Script Code', '<p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:12px;">Copy this code into your Google Apps Script project:</p><pre style="background:rgba(0,0,0,0.4);padding:16px;border-radius:8px;font-size:11.5px;overflow-x:auto;white-space:pre-wrap;color:#a5f3fc;line-height:1.6;">' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre><button class="btn btn-primary btn-full" style="margin-top:16px;" onclick="navigator.clipboard.writeText(`' + code.replace(/`/g,'\\`') + '`);showToast(\'Copied!\',\'success\')"><i class="fa-solid fa-copy"></i> Copy Code</button>');
-  };
 
   // Export CSV
   const btnExportCsv = document.getElementById('btn-export-apps-csv');
   if (btnExportCsv) {
     btnExportCsv.addEventListener('click', () => {
       if (apps.length === 0) { showToast('No applications to export.', 'info'); return; }
-      const headers = ['ID','Full Name','Email','Phone','City','University','Degree','Year','Grad Year','Domain','Mode','Duration','LinkedIn','Why Join','Skills','Status','Applied At'];
+      const headers = ['ID','Full Name','Email','Phone','City','University','Degree','Year','Grad Year','Domain','Mode','Duration','Why Join','Skills','Status','Applied At'];
       const rows = apps.map(a => [
         a.id, a.fullName, a.email, a.phone, a.city, a.university, a.degree,
-        a.yearOfStudy, a.gradYear, a.role, a.mode, a.duration, a.linkedin,
+        a.yearOfStudy, a.gradYear, a.role, a.mode, a.duration,
         (a.whyJoin||'').replace(/,/g,' ').replace(/\n/g,' '),
         (a.skills||'').replace(/,/g,' ').replace(/\n/g,' '),
         a.status, a.appliedAt
